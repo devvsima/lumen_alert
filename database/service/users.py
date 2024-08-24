@@ -23,5 +23,12 @@ def create_user(id: int, username: str = None, language: str = None) -> Users:
     return new_user
 
 
-def get_notification_enabled_users():
+def get_notification_enabled_users(user_id = None):
+    if user_id:
+        return [user.id for user in Users.select(Users.id).where(Users.id == user_id & Users.alert == 1)]
     return [user.id for user in Users.select(Users.id).where(Users.alert == 1)]
+
+def toggle_alert(user_id):
+    user = Users.get(Users.id == user_id)
+    user.alert = not user.alert
+    user.save()

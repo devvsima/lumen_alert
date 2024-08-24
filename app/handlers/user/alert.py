@@ -17,20 +17,18 @@ from database.models.users import Users
 # @dp.message_handler(Command('alert'))
 
 from app.keyboards.inline.alert import alert_off_ikb, alert_on_ikb
+
 @dp.callback_query_handler(Text("alert_settings"))
 async def _alert_settings(callback: types.CallbackQuery, user: Users):
-    if user.alert:
+    if user.alert == True:
         await callback.message.answer("У тебя включены уведомления 🌞\n\nМожешь выключить нажав кнопку ниже.", reply_markup=alert_off_ikb())
-    else:
+    elif user.alert == False:
         await callback.message.answer("У тебя уведомления выключены 🌚\n\nМожешь включить нажав кнопку ниже.", reply_markup=alert_on_ikb())
         
+
 @dp.callback_query_handler(Text("alert_off"))
 @dp.callback_query_handler(Text("alert_on"))
-async def alert_off_on(callback: types.CallbackQuery, user: Users):
-    if callback.data == 'alert_off':
-        Users.update(alert=False).where(Users.id == user.id)
-    elif callback.data == 'alert_on':
-        Users.update(alert=True).where(Users.id == user.id)
+async def _alert_off_or_on(callback: types.CallbackQuery, user: Users):
+    from database.service.users import toggle_alert
+    # toggle_alert(callback.from_user.id)
     await _alert_settings(callback, user)
-        
-        
