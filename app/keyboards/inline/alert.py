@@ -27,24 +27,13 @@ def ds_link_ikb():
     )
     return ikb
 
-def alert_off_ikb():
-    ikb = InlineKeyboardMarkup(
-        resize_keyboard=True,
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(text="Выключить 🔕", callback_data='alert_off'),
-            ],
-        ],
-    )
+def alert_off_on_ikb(is_alert: bool):
+    ikb = InlineKeyboardMarkup()
+    if is_alert:
+        ikb.add(InlineKeyboardButton(text="Выключить 🔕", callback_data='alert_off'))
+    else:
+        ikb.add(InlineKeyboardButton(text="Включить 🔔", callback_data='alert_on'))
     return ikb
-
-def alert_on_ikb():
-    ikb = InlineKeyboardMarkup(
-        resize_keyboard=True,
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(text="Включить 🔔", callback_data='alert_on'),
-            ],
-        ],
-    )
-    return ikb
+    
+    
+        
