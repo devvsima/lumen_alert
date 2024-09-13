@@ -6,11 +6,14 @@ DIR = Path(__file__).absolute().parent.parent
 env = Env()
 env.read_env()
 
-#  tgbot
+# tgbot
 tg_token = env.str("TG_TOKEN", default=None)
-ds_token = env.str("DS_TOKEN", default=None)
 banned_users = env.list("BANED", default=None, subcast=int)
 admins = env.list("ADMINS", default=None, subcast=int)
+
+# ds 
+DS_TOKEN = env.str("DS_TOKEN", default=None)
+DS_SERVER_ID = env.int("DS_SERVER_ID", default=None)
 
 # db
 DB_NAME = env.str("DB_NAME", default=None)

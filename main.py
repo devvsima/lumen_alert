@@ -5,7 +5,9 @@ from aiohttp import web
 from app import middlewares, filters, handlers
 from loader import dp, tgbot, discord_client
 from utils.logging import logger
-from data.config import ds_token
+from data.config import DS_TOKEN
+from app.handlers.user.alert import send_telegram_message
+from data.config import DS_SERVER_ID
 
 async def on_startup(dp: Dispatcher):
     from app.commands import set_default_commands
@@ -15,12 +17,16 @@ async def on_startup(dp: Dispatcher):
 async def on_shutdown(dp: Dispatcher):
     logger.info("~ Shutting down...")
 
-from app.handlers.user.alert import send_telegram_message
 
 @discord_client.event
 async def on_voice_state_update(member, before, after):
-    if after.channel is not None:  # Если кто-то зашел в голосовой канал
-        await send_telegram_message(f"<code>{member.name}</code> присоединился к голосовому каналу - {after.channel.name}")
+    # Проверяем, если before.channel был None (не был в голосовом канале), а after.channel не None (теперь в канале)
+    if member.guild.id != DS_SERVER_ID:
+        return
+    if before.channel is None and after.channel is not None:
+        text = f"<code>{member.name}</code> присоединился к голосовому каналу - {after.channel.name}"
+            
+        await send_telegram_message(text)
 
 # Настройка aiohttp для прослушивания входящих запросов (если нужен вебхук)
 async def handle_post(request):
@@ -34,7 +40,7 @@ app = web.Application()
 app.router.add_post('/telegram_webhook', handle_post)
 
 async def start_discord_bot():
-    await discord_client.start(ds_token)
+    await discord_client.start(DS_TOKEN)
 
 async def start_aiohttp_server():
     runner = web.AppRunner(app)

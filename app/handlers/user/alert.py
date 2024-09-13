@@ -21,14 +21,13 @@ async def send_telegram_message(text):
             
             pass
 
-
 @dp.callback_query_handler(Text("alert_settings"))
 async def _alert_settings(callback: types.CallbackQuery, user: Users):
     if user.alert == True:
         text = ("У тебя включены уведомления 🌞\n\nМожешь выключить нажав кнопку ниже.")
     elif user.alert == False:
         text = "У тебя уведомления выключены 🌚\n\nМожешь включить нажав кнопку ниже."
-    await callback.message.answer(text, reply_markup=alert_off_on_ikb())
+    await callback.message.answer(text, reply_markup=alert_off_on_ikb(user.alert))
         
 
 @dp.callback_query_handler(Text(["alert_on", "alert_off"]))
