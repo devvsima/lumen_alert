@@ -2,12 +2,16 @@
 .fleet
 .vscode
 .venv
+.github
 
-.sqlite
 
 **/__pycache__
 
+
 **.sqlite
 **.sqlite3
+**.json
+**.csv
+**.sql
 **/.env
 **/logs

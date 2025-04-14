@@ -1,14 +1,17 @@
 [project]
-name = "lumen-alert"
+name = "aiogram-sqlalchemy-template"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
-    "aiogram==2.25",
+    "aiogram>=3.18.0",
+    "aiosqlite>=0.21.0",
+    "alembic>=1.15.1",
+    "asyncpg>=0.30.0",
     "discord-py>=2.5.2",
     "environs>=14.1.1",
     "loguru>=0.7.3",
-    "peewee>=3.17.9",
-    "psycopg2>=2.9.10",
+    "redis>=5.2.1",
+    "sqlalchemy>=2.0.38",
 ]

@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from environs import Env
 
 DIR = Path(__file__).absolute().parent.parent
@@ -6,23 +7,51 @@ DIR = Path(__file__).absolute().parent.parent
 env = Env()
 env.read_env()
 
-# tgbot
-tg_token = env.str("TG_TOKEN", default=None)
-banned_users = env.list("BANED", default=None, subcast=int)
-admins = env.list("ADMINS", default=None, subcast=int)
 
-# ds 
+class DatabaseSettings:
+    NAME: str = env.str("DB_NAME", default=None)
+    HOST: str = env.str("DB_HOST", default="localhost")
+    PORT: int = env.int("DB_PORT", default=5432)
+    USER: str = env.str("DB_USER", default="postgres")
+    PASS: str = env.str("DB_PASS", default="postgres")
+
+    URL: str = env.str("DB_URL", default=f"sqlite+aiosqlite:///{DIR}/database/db.sqlite3")
+
+    if all([NAME, HOST, PORT, USER, PASS]):
+        URL = f"postgresql+asyncpg://{USER}:{PASS}@{HOST}:{PORT}/{NAME}"
+
+    ECHO = False
+    POOL_SIZE = 5
+    MAX_OVERFLOW = 10
+
+
+class RedisSettings:
+    HOST: str = env.str("REDIS_HOST", default=None)
+    PORT: int = env.int("REDIS_PORT", default=6379)
+    DB: int = env.int("REDIS_DB", default=5)
+
+    URL: str = env.str("RD_URL", default=None)
+
+    if all([HOST, PORT, DB]):
+        URL = f"redis://{HOST}:{PORT}/{DB}"
+
+
 DS_TOKEN = env.str("DS_TOKEN", default=None)
 DS_SERVER_ID = env.int("DS_SERVER_ID", default=None)
 
-# db
-DB_NAME = env.str("DB_NAME", default=None)
-DB_HOST = env.str("DB_HOST", default="localhost")
-DB_PORT = env.int("DB_PORT", default=5432)
-DB_USER = env.str("DB_USER", default=None)
-DB_PASS = env.str("DB_PASS", default=None)
-RATE_LIMIT = env.int("RATE_LIMIT", default=5)
+BOT_TOKEN: str = env.str("TOKEN", default=None)
+SKIP_UPDATES: bool = env.bool("SKIP_UPDATES", default=False)
 
-I18N_DOMAIN = 'bot'
-LOCALES_DIR = f'{DIR}\config\locales'
+ADMINS: list = env.list("ADMINS", default=None, subcast=int)
+MODERATOR_GROUP: int = env.int("MODERATOR_GROUP_ID", default=None)
 
+TIME_ZONE = "UTC"
+
+I18N_DOMAIN = "bot"
+
+
+IMAGES_DIR = rf"{DIR}/images"
+LOCALES_DIR = f"{DIR}/data/locales"
+
+database = DatabaseSettings()
+redis = RedisSettings()

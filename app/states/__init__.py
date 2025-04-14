@@ -1,2 +1,0 @@
-from .send import Send
-
