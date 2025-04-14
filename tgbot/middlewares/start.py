@@ -2,7 +2,6 @@ from typing import Any, Callable
 
 from aiogram import BaseMiddleware
 from aiogram.types import Message
-
 from database.services.users import User
 from utils.base62 import decode_base62
 

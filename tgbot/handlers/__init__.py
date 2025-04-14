@@ -1,6 +1,5 @@
 from aiogram import Dispatcher
 from aiogram.types import ErrorEvent
-
 from utils.logging import logger
 
 from .admin import router as admin_router

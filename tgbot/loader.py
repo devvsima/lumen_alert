@@ -1,10 +1,7 @@
-import discord
 from aiogram import Bot, Dispatcher
 from aiogram.client.bot import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.utils.i18n import I18n
-from discord.ext import commands
-
 from data.config import BOT_TOKEN, I18N_DOMAIN, LOCALES_DIR, redis
 from utils.logging import logger
 
@@ -20,11 +17,6 @@ elif not redis.URL:
     storage = MemoryStorage()
     logger.log("BOT", "Storage: Default")
 
-
-intents = discord.Intents.default()
-intents.voice_states = True  # Для работы с состоянием голосовых каналов
-
-discord_client = commands.Bot(command_prefix="!", intents=intents)
 
 bot = Bot(
     token=BOT_TOKEN,

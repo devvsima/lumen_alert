@@ -1,4 +1,4 @@
-from loader import _
+from tgbot.loader import _
 
 
 class MsgText:

@@ -15,8 +15,8 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 
 from data.config import database
-from database.models.users import UserModel
 from database.models.base import BaseModel
+from database.models.users import UserModel
 
 if database.URL.startswith("sqlite"):
     config.set_main_option("sqlalchemy.url", database.URL.replace("sqlite+aiosqlite", "sqlite"))

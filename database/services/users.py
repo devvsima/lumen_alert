@@ -1,5 +1,6 @@
-from sqlalchemy.ext.asyncio import AsyncSession
+import select
 
+from sqlalchemy.ext.asyncio import AsyncSession
 from utils.logging import logger
 
 from ..models.users import UserModel
@@ -10,6 +11,12 @@ class User:
     async def get(session: AsyncSession, user_id: int) -> UserModel | None:
         """Возвращает пользователя по его id"""
         return await session.get(UserModel, user_id)
+
+    @staticmethod
+    async def get_alert_user_ids(session: AsyncSession) -> list[int]:
+        result = await session.execute(select(UserModel.id).where(UserModel.is_alert == True))
+        user_ids = [row[0] for row in result.all()]
+        return user_ids
 
     @staticmethod
     async def get_or_create(

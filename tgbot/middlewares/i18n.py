@@ -17,7 +17,7 @@ pybabel update -i data/locales/bot.pot -d data/locales -D bot
 from aiogram.types import Update
 from aiogram.utils.i18n import I18nMiddleware
 
-from loader import i18n
+from tgbot.loader import i18n
 
 
 class MyI18nMiddleware(I18nMiddleware):

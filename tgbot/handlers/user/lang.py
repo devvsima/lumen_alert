@@ -1,12 +1,12 @@
 from aiogram import F, types
 from aiogram.filters import Command
 from aiogram.filters.state import StateFilter
+from database.models import UserModel
+from database.services import User
 
 from tgbot.handlers.msg_text import msg_text
 from tgbot.keyboards.inline.lang import lang_ikb
 from tgbot.routers import user_router as router
-from database.models import UserModel
-from database.services import User
 
 
 @router.message(Command("language"), StateFilter(None))

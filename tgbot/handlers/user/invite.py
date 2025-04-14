@@ -1,12 +1,12 @@
 from aiogram import types
 from aiogram.filters import Command
 from aiogram.filters.state import StateFilter
+from database.models.users import UserModel
+from utils.base62 import encode_base62
 
 from tgbot.handlers.msg_text import msg_text
+from tgbot.loader import bot
 from tgbot.routers import user_router as router
-from database.models.users import UserModel
-from loader import bot
-from utils.base62 import encode_base62
 
 
 @router.message(Command("invite"), StateFilter(None))

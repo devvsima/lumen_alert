@@ -1,6 +1,5 @@
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-
 from data.config import database
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from utils.logging import logger
 
 if database.URL.startswith("sqlite"):

@@ -1,8 +1,8 @@
 from aiogram import Dispatcher
+from database.connect import async_session
 
 from tgbot.middlewares.i18n import i18n_middleware
 from tgbot.routers import admin_router, start_router, user_router
-from database.connect import async_session
 
 from .admin import AdminMiddleware
 from .database import DatabaseMiddleware
