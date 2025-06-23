@@ -17,7 +17,7 @@ class DatabaseSettings:
 
     URL: str = env.str("DB_URL", default=f"sqlite+aiosqlite:///{DIR}/database/db.sqlite3")
 
-    if all([NAME, HOST, PORT, USER, PASS]):
+    if all((NAME, HOST, PORT, USER, PASS)):
         URL = f"postgresql+asyncpg://{USER}:{PASS}@{HOST}:{PORT}/{NAME}"
 
     ECHO = False
@@ -32,26 +32,32 @@ class RedisSettings:
 
     URL: str = env.str("RD_URL", default=None)
 
-    if all([HOST, PORT, DB]):
+    if all((HOST, PORT, DB)):
         URL = f"redis://{HOST}:{PORT}/{DB}"
 
 
-DS_TOKEN = env.str("DS_TOKEN", default=None)
-DS_SERVER_ID = env.int("DS_SERVER_ID", default=None)
+class DiscordBotSettings:
+    TOKEN = env.str("DISCORD_BOT_TOKEN", default=None)
+    SERVER_ID = env.int("DISCORD_SERVER_ID", default=None)
 
-BOT_TOKEN: str = env.str("TOKEN", default=None)
-SKIP_UPDATES: bool = env.bool("SKIP_UPDATES", default=False)
 
-ADMINS: list = env.list("ADMINS", default=None, subcast=int)
-MODERATOR_GROUP: int = env.int("MODERATOR_GROUP_ID", default=None)
+class TelegramBotSettings:
+    TOKEN: str = env.str("TELEGRAM_BOT_TOKEN", default=None)
+    SKIP_UPDATES: bool = env.bool("SKIP_UPDATES", default=False)
+
+    ADMINS: list = env.list("ADMINS", default=None, subcast=int)
+    MODERATOR_GROUP: int = env.int("MODERATOR_GROUP_ID", default=None)
+
 
 TIME_ZONE = "UTC"
 
 I18N_DOMAIN = "bot"
-
 
 IMAGES_DIR = rf"{DIR}/images"
 LOCALES_DIR = f"{DIR}/data/locales"
 
 database = DatabaseSettings()
 redis = RedisSettings()
+
+discord_bot = DiscordBotSettings()
+telegram_bot = TelegramBotSettings()

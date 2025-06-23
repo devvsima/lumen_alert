@@ -1,13 +1,12 @@
-from data.config import DS_SERVER_ID, DS_TOKEN
-from utils.logging import logger
-
+from data.config import discord_bot
 from dsbot.loader import discord_client
 from tgbot.handlers.bot_utils import send_telegram_message
+from utils.logging import logger
 
 
 @discord_client.event
 async def on_voice_state_update(member, before, after):
-    if member.guild.id != DS_SERVER_ID:
+    if member.guild.id != discord_bot.SERVER_ID:
         return
 
     if before.channel is None and after.channel is not None:
@@ -18,4 +17,4 @@ async def on_voice_state_update(member, before, after):
 
 async def start_discord_bot():
     logger.info("Starting Discord bot...")
-    await discord_client.start(DS_TOKEN)
+    await discord_client.start(discord_bot.TOKEN)

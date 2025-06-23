@@ -2,7 +2,7 @@ import asyncio
 
 from aiogram.methods import DeleteWebhook
 
-from data.config import SKIP_UPDATES
+from data.config import telegram_bot
 from tgbot.handlers import setup_handlers
 from tgbot.loader import bot, dp
 from tgbot.middlewares import setup_middlewares
@@ -25,7 +25,7 @@ async def start_telegram_bot():
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
 
-    await bot(DeleteWebhook(drop_pending_updates=SKIP_UPDATES))
+    await bot(DeleteWebhook(drop_pending_updates=telegram_bot.SKIP_UPDATES))
 
     await dp.start_polling(bot)
 

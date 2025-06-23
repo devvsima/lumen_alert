@@ -2,7 +2,8 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.bot import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.utils.i18n import I18n
-from data.config import BOT_TOKEN, I18N_DOMAIN, LOCALES_DIR, redis
+
+from data.config import I18N_DOMAIN, LOCALES_DIR, redis, telegram_bot
 from utils.logging import logger
 
 if redis.URL:
@@ -19,7 +20,7 @@ elif not redis.URL:
 
 
 bot = Bot(
-    token=BOT_TOKEN,
+    token=telegram_bot.TOKEN,
     default=DefaultBotProperties(parse_mode=ParseMode.HTML),
 )
 dp = Dispatcher(bot=bot, storage=storage)
