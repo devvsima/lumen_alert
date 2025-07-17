@@ -5,7 +5,7 @@ from tgbot.loader import bot
 from utils.logging import logger
 
 
-async def send_telegram_message(text):
+async def send_alert_to_users(text: str):
     try:
         async with async_session() as session:
             user_ids = await TgUser.get_alert_user_ids(session)

@@ -3,7 +3,7 @@ from typing import Any, Callable
 from aiogram import BaseMiddleware
 from aiogram.types import Message
 
-from database.models.tg_user import TgUserStatus
+from database.models.telegram_user import TgUserStatus
 from database.services.tg_users import TgUser
 from utils.base62 import decode_base62
 

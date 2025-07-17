@@ -1,44 +1,19 @@
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.services.base import BaseService
-from utils.logging import logger
 
-from ..models.tg_user import TgUserModel
+from ..models.discord_user import DsUserModel
 
 
-class TgUser(BaseService):
-    model = TgUserModel
-
-    @staticmethod
-    async def get_alert_user_ids(session: AsyncSession) -> list[int]:
-        try:
-            logger.log("DATABASE", "Executing query to get alert user IDs...")
-            result = await session.execute(
-                select(TgUserModel.id).where(TgUserModel.is_alert.is_(True))
-            )
-            user_ids = [row[0] for row in result.fetchall()]
-            logger.log("DATABASE", f"Found {len(user_ids)} users with alerts enabled")
-            return user_ids
-        except Exception as e:
-            logger.error(f"Error in get_alert_user_ids: {e}")
-            return []
+class DsUser(BaseService):
+    model = DsUserModel
 
     @staticmethod
     async def get_or_create(
-        session: AsyncSession, user_id: int, username: str = None, language: str = None
-    ) -> TgUserModel:
-        if user := await TgUser.get_by_id(session, user_id):
+        session: AsyncSession, user_id: int, display_name: str = None, name: str = None
+    ) -> DsUserModel:
+        if user := await DsUser.get_by_id(session, user_id):
             return user, False
-        await TgUser.create(session, user_id=user_id, username=username, language=language)
-        user = await TgUser.get_by_id(session, user_id)
+        await DsUser.create(session=session, id=user_id, display_name=display_name, name=name)
+        user = await DsUser.get_by_id(session, user_id)
         return user, True
-
-    @staticmethod
-    async def increment_referral_count(
-        session: AsyncSession, user: TgUserModel, num: int = 1
-    ) -> None:
-        """Добавляет приведенного реферала к пользователю {inviter_id}"""
-        user.referral += num
-        await session.commit()
-        logger.log("DATABASE", f"{user.id} (@{user.username}): привел нового пользователя")

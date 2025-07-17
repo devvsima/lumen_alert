@@ -16,7 +16,7 @@ if config.config_file_name is not None:
 
 from data.config import database
 from database.models.base import BaseModel
-from database.models.tg_user import TgUserModel
+from database.models.telegram_user import TgUserModel
 
 if database.URL.startswith("sqlite"):
     config.set_main_option("sqlalchemy.url", database.URL.replace("sqlite+aiosqlite", "sqlite"))

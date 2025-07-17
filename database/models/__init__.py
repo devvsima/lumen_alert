@@ -1,3 +1,4 @@
-from .ds_user import DsUserModel
+from .discord_user import DsUserModel
+from .group import GroupMemberModel, GroupModel
 from .guild import GuildModel
-from .tg_user import TgUserModel
+from .telegram_user import TgUserModel

@@ -5,7 +5,7 @@ from aiogram.filters.state import StateFilter
 from database.models import TgUserModel
 from database.services import TgUser
 from tgbot.filters.kb_filter import LangCallback
-from tgbot.handlers.msg_text import msg_text
+from tgbot.text import msg_text
 from tgbot.keyboards.inline.lang import lang_ikb
 from tgbot.routers import user_router as router
 

@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.filters import CommandStart
 from aiogram.filters.state import StateFilter
 
-from tgbot.handlers.msg_text import msg_text
+from tgbot.text import msg_text
 from tgbot.routers import start_router
 
 
