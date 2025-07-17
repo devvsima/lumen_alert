@@ -29,7 +29,7 @@ async def _help_command(message: types.Message) -> None:
 
 **ℹ️ Dashboard automatically updates when:**
 • Someone joins a voice channel
-• Someone leaves a voice channel  
+• Someone leaves a voice channel
 • Someone switches between channels"""
 
     await message.answer(help_text, parse_mode="Markdown")

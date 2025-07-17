@@ -2,7 +2,8 @@ from aiogram import types
 from aiogram.filters import Command
 from aiogram.filters.state import StateFilter
 
-from tgbot.business.voice_update_dashboard import create_new_dashboard, update_all_dashboards
+from tgbot.business.voice_update_dashboard import (create_new_dashboard,
+                                                   update_all_dashboards)
 from tgbot.routers import user_router as router
 from tgbot.text import message_text as mt
 

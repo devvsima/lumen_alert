@@ -1,8 +1,10 @@
 from typing import List
-from sqlalchemy import select, delete
+
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.services.base import BaseService
+
 from ..models.voice_channel import VoiceChannelUserModel
 
 
@@ -21,7 +23,7 @@ class VoiceChannelUser(BaseService):
         """Добавить пользователя в голосовой канал"""
         # Сначала удаляем пользователя из всех каналов (если он был)
         await VoiceChannelUser.remove_user_from_all_channels(session, user_id)
-        
+
         # Добавляем в новый канал
         user_in_channel = await VoiceChannelUser.create(
             session=session,

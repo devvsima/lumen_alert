@@ -13,15 +13,15 @@ async def _remove_dashboard_command(message: types.Message) -> None:
     if not message.reply_to_message:
         await message.answer("❌ Please reply to a dashboard message to remove it")
         return
-    
+
     try:
         async with async_session() as session:
             success = await Dashboard.delete_dashboard(
-                session, 
-                message.chat.id, 
+                session,
+                message.chat.id,
                 message.reply_to_message.message_id
             )
-            
+
         if success:
             await message.answer("✅ Dashboard removed successfully!")
             # Удаляем само сообщение с дашбордом
@@ -31,7 +31,7 @@ async def _remove_dashboard_command(message: types.Message) -> None:
                 pass  # Игнорируем ошибки удаления
         else:
             await message.answer("❌ Dashboard not found")
-            
+
     except Exception as e:
         await message.answer(f"❌ Error removing dashboard: {str(e)}")
 
@@ -42,21 +42,21 @@ async def _list_dashboards_command(message: types.Message) -> None:
     try:
         async with async_session() as session:
             all_dashboards = await Dashboard.get_all_dashboards(session)
-            
+
         # Фильтруем дашборды только для этого чата
         chat_dashboards = [d for d in all_dashboards if d.chat_id == message.chat.id]
-        
+
         if not chat_dashboards:
             await message.answer("📭 No active dashboards in this chat")
             return
-            
+
         text = "📊 **Active Dashboards:**\n\n"
         for dashboard in chat_dashboards:
             text += f"🔗 Message ID: `{dashboard.message_id}`\n"
             text += f"📅 Created: {dashboard.created_at.strftime('%Y-%m-%d %H:%M')}\n"
             text += f"🔄 Updated: {dashboard.updated_at.strftime('%Y-%m-%d %H:%M')}\n\n"
-            
+
         await message.answer(text, parse_mode="Markdown")
-        
+
     except Exception as e:
         await message.answer(f"❌ Error listing dashboards: {str(e)}")

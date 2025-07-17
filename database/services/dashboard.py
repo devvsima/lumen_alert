@@ -1,8 +1,10 @@
 from typing import List, Optional
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.services.base import BaseService
+
 from ..models.dashboard import DashboardModel
 
 
@@ -40,7 +42,7 @@ class Dashboard(BaseService):
             )
         )
         dashboard = dashboard.scalar_one_or_none()
-        
+
         if dashboard:
             await session.delete(dashboard)
             await session.commit()

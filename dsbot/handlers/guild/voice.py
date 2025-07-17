@@ -32,7 +32,7 @@ async def on_voice_state_update(member, before, after):
                 channel_id=after.channel.id,
                 channel_name=after.channel.name
             )
-            
+
             text = f"<code>{member.display_name}</code> joined the voice channel - {after.channel.name}"
             logger.info(f"User {member.display_name} joined voice channel {after.channel.name}")
             await send_alert_to_users(text=text)
@@ -40,7 +40,7 @@ async def on_voice_state_update(member, before, after):
         # Если пользователь покинул канал
         elif before.channel is not None and after.channel is None:
             await VoiceChannelUser.remove_user_from_all_channels(session, member.id)
-            
+
             text = f"<code>{member.display_name}</code> left the voice channel - {before.channel.name}"
             logger.info(f"User {member.display_name} left voice channel {before.channel.name}")
             await send_alert_to_users(text=text)
@@ -55,7 +55,7 @@ async def on_voice_state_update(member, before, after):
                 channel_id=after.channel.id,
                 channel_name=after.channel.name
             )
-            
+
             text = f"<code>{member.display_name}</code> switched from {before.channel.name} to {after.channel.name}"
             logger.info(f"User {member.display_name} switched from {before.channel.name} to {after.channel.name}")
             await send_alert_to_users(text=text)
