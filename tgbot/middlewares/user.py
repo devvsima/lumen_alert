@@ -3,7 +3,7 @@ from typing import Any, Callable
 from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery, Message
 
-from database.models.user import TgUserStatus
+from database.models.tg_user import TgUserStatus
 from database.services import TgUser
 
 

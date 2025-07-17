@@ -22,10 +22,3 @@ class TgUserModel(BaseModel):
     referral: Mapped[int] = mapped_column(Integer, server_default="0")
     status: Mapped[int] = mapped_column(Integer, server_default="1")
     is_alert: Mapped[bool] = mapped_column(Boolean, server_default="True")
-
-
-class DsUserModel(BaseModel):
-    __tablename__ = "discord_users"
-
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
-    username: Mapped[str] = mapped_column(String(70), nullable=True)

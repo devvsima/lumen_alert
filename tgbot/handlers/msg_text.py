@@ -24,9 +24,8 @@ class MsgText:
     def CHANGE_LANG(self):
         return _("Select the language you want to switch to: 🌐")
 
-    @property
-    def DONE_CHANGE_LANG(self):
-        return _("Your language has been successfully changed! ✅")
+    def DONE_CHANGE_LANG(self, language: str):
+        return _("Your language has been successfully changed! ✅", locale=language)
 
 
 msg_text = MsgText()

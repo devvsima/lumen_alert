@@ -3,8 +3,8 @@ from typing import Any, Callable
 from aiogram import BaseMiddleware
 from aiogram.types import Message
 
-from database.models.user import TgUserStatus
-from database.services.users import TgUser
+from database.models.tg_user import TgUserStatus
+from database.services.tg_users import TgUser
 from utils.base62 import decode_base62
 
 
@@ -24,7 +24,7 @@ class StartMiddleware(BaseMiddleware):
 
         if is_create:
             if inviter := data["command"].args:
-                inviter = await TgUser.get(decode_base62(inviter))
+                inviter = await TgUser.get_by_id(decode_base62(inviter))
                 await TgUser.increment_referral_count(session, inviter)
 
         return await handler(message, data)

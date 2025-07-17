@@ -3,10 +3,10 @@ import asyncio
 from aiogram.methods import DeleteWebhook
 
 from data.config import telegram_bot
+from tgbot.commands import set_default_commands
 from tgbot.handlers import setup_handlers
 from tgbot.loader import bot, dp
 from tgbot.middlewares import setup_middlewares
-from tgbot.others.commands import set_default_commands
 from utils.logging import logger
 
 

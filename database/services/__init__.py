@@ -1,1 +1,1 @@
-from .users import TgUser
+from .tg_users import TgUser

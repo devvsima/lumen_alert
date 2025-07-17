@@ -1,5 +1,5 @@
 from database.connect import async_session
-from database.services.users import TgUser
+from database.services.tg_users import TgUser
 from tgbot.keyboards.inline.alert import ds_link_ikb
 from tgbot.loader import bot
 from utils.logging import logger

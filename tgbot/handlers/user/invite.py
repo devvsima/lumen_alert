@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.filters import Command
 from aiogram.filters.state import StateFilter
 
-from database.models.user import TgUserModel
+from database.models.tg_user import TgUserModel
 from tgbot.handlers.msg_text import msg_text
 from tgbot.loader import bot
 from tgbot.routers import user_router as router
