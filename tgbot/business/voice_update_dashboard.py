@@ -10,28 +10,28 @@ async def create_dashboard_text() -> str:
     """Создает текст для дашборда с информацией о голосовых каналах"""
     async with async_session() as session:
         users_in_channels = await VoiceChannelUser.get_all_users_in_channels(session)
-    
+
     if not users_in_channels:
         return "🔊 <b>Voice Channels Dashboard</b>\n\n📭 No one is currently in voice channels"
-    
+
     # Группируем пользователей по каналам
     channels_data = {}
     for user in users_in_channels:
         if user.channel_name not in channels_data:
             channels_data[user.channel_name] = []
         channels_data[user.channel_name].append(user.display_name)
-    
+
     # Формируем текст
     text = "🔊 <b>Voice Channels Dashboard</b>\n\n"
-    
+
     for channel_name, users in channels_data.items():
         text += f"🎙️ <b>{channel_name}</b>\n"
         for user in users:
             text += f"  👤 {user}\n"
         text += "\n"
-    
+
     text += f"👥 Total users online: {len(users_in_channels)}"
-    
+
     return text
 async def update_all_dashboards():
     """Обновляет все активные дашборды"""

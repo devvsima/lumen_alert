@@ -30,7 +30,7 @@ async def on_voice_state_update(member, before, after):
                 user_name=member.name,
                 display_name=member.display_name,
                 channel_id=after.channel.id,
-                channel_name=after.channel.name
+                channel_name=after.channel.name,
             )
 
             text = f"<code>{member.display_name}</code> joined the voice channel - {after.channel.name}"
@@ -41,24 +41,32 @@ async def on_voice_state_update(member, before, after):
         elif before.channel is not None and after.channel is None:
             await VoiceChannelUser.remove_user_from_all_channels(session, member.id)
 
-            text = f"<code>{member.display_name}</code> left the voice channel - {before.channel.name}"
+            text = (
+                f"<code>{member.display_name}</code> left the voice channel - {before.channel.name}"
+            )
             logger.info(f"User {member.display_name} left voice channel {before.channel.name}")
-            await send_alert_to_users(text=text)
+            # await send_alert_to_users(text=text)
 
         # Если пользователь переключился между каналами
-        elif before.channel is not None and after.channel is not None and before.channel != after.channel:
+        elif (
+            before.channel is not None
+            and after.channel is not None
+            and before.channel != after.channel
+        ):
             await VoiceChannelUser.add_user_to_channel(
                 session,
                 user_id=member.id,
                 user_name=member.name,
                 display_name=member.display_name,
                 channel_id=after.channel.id,
-                channel_name=after.channel.name
+                channel_name=after.channel.name,
             )
 
             text = f"<code>{member.display_name}</code> switched from {before.channel.name} to {after.channel.name}"
-            logger.info(f"User {member.display_name} switched from {before.channel.name} to {after.channel.name}")
-            await send_alert_to_users(text=text)
+            logger.info(
+                f"User {member.display_name} switched from {before.channel.name} to {after.channel.name}"
+            )
+            # await send_alert_to_users(text=text)
 
     # Обновляем все дашборды после любого изменения
     await update_all_dashboards()
