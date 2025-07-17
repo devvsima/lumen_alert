@@ -22,7 +22,7 @@ async def create_dashboard_text() -> str:
         channels_data[user.channel_name].append(user.display_name)
 
     # Формируем текст
-    text = "🔊 <b>Voice Channels Dashboard</b>\n\n"
+    text = f"Voice online: {len(users_in_channels)}"
 
     for channel_name, users in channels_data.items():
         text += f"🎙️ <b>{channel_name}</b>\n"
@@ -30,9 +30,11 @@ async def create_dashboard_text() -> str:
             text += f"  👤 {user}\n"
         text += "\n"
 
-    text += f"👥 Total users online: {len(users_in_channels)}"
+    text += "🔊 <b>Voice Channels Dashboard</b>\n\n"
 
     return text
+
+
 async def update_all_dashboards():
     """Обновляет все активные дашборды"""
     try:
@@ -48,15 +50,23 @@ async def update_all_dashboards():
                         message_id=dashboard.message_id,
                         text=dashboard_text,
                         reply_markup=ds_link_ikb(),
-                        parse_mode="HTML"
+                        parse_mode="HTML",
                     )
-                    logger.info(f"Dashboard updated for chat {dashboard.chat_id}, message {dashboard.message_id}")
+                    logger.info(
+                        f"Dashboard updated for chat {dashboard.chat_id}, message {dashboard.message_id}"
+                    )
                 except Exception as e:
-                    logger.error(f"Failed to update dashboard {dashboard.chat_id}:{dashboard.message_id} - {e}")
+                    logger.error(
+                        f"Failed to update dashboard {dashboard.chat_id}:{dashboard.message_id} - {e}"
+                    )
                     # Если сообщение не найдено, удаляем дашборд из базы
                     if "message to edit not found" in str(e).lower():
-                        await Dashboard.delete_dashboard(session, dashboard.chat_id, dashboard.message_id)
-                        logger.info(f"Deleted non-existent dashboard {dashboard.chat_id}:{dashboard.message_id}")
+                        await Dashboard.delete_dashboard(
+                            session, dashboard.chat_id, dashboard.message_id
+                        )
+                        logger.info(
+                            f"Deleted non-existent dashboard {dashboard.chat_id}:{dashboard.message_id}"
+                        )
 
     except Exception as e:
         logger.error(f"Error in update_all_dashboards: {e}")
@@ -68,18 +78,13 @@ async def create_new_dashboard(chat_id: int) -> int:
         dashboard_text = await create_dashboard_text()
 
         sent_message = await bot.send_message(
-            chat_id=chat_id,
-            text=dashboard_text,
-            reply_markup=ds_link_ikb(),
-            parse_mode="HTML"
+            chat_id=chat_id, text=dashboard_text, reply_markup=ds_link_ikb(), parse_mode="HTML"
         )
 
         # Сохраняем дашборд в базу данных
         async with async_session() as session:
             await Dashboard.create_dashboard(
-                session,
-                chat_id=chat_id,
-                message_id=sent_message.message_id
+                session, chat_id=chat_id, message_id=sent_message.message_id
             )
 
         logger.info(f"New dashboard created for chat {chat_id}, message {sent_message.message_id}")
