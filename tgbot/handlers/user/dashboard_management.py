@@ -50,13 +50,13 @@ async def _list_dashboards_command(message: types.Message) -> None:
             await message.answer("📭 No active dashboards in this chat")
             return
 
-        text = "📊 **Active Dashboards:**\n\n"
+        text = "📊 <b>Active Dashboards:</b>\n\n"
         for dashboard in chat_dashboards:
-            text += f"🔗 Message ID: `{dashboard.message_id}`\n"
+            text += f"🔗 Message ID: <code>{dashboard.message_id}</code>\n"
             text += f"📅 Created: {dashboard.created_at.strftime('%Y-%m-%d %H:%M')}\n"
             text += f"🔄 Updated: {dashboard.updated_at.strftime('%Y-%m-%d %H:%M')}\n\n"
 
-        await message.answer(text, parse_mode="Markdown")
+        await message.answer(text, parse_mode="HTML")
 
     except Exception as e:
         await message.answer(f"❌ Error listing dashboards: {str(e)}")

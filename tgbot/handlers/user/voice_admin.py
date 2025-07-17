@@ -42,7 +42,7 @@ async def _voice_stats_command(message: types.Message) -> None:
             users_in_channels = await VoiceChannelUser.get_all_users_in_channels(session)
 
         if not users_in_channels:
-            await message.answer("📊 **Voice Channels Statistics**\n\n📭 No users currently in voice channels")
+            await message.answer("📊 <b>Voice Channels Statistics</b>\n\n📭 No users currently in voice channels")
             return
 
         # Группируем пользователей по каналам
@@ -63,19 +63,19 @@ async def _voice_stats_command(message: types.Message) -> None:
             total_users += 1
 
         # Формируем статистику
-        text = "📊 **Voice Channels Statistics**\n\n"
+        text = "📊 <b>Voice Channels Statistics</b>\n\n"
 
         for channel_name, stats in channels_stats.items():
-            text += f"🎙️ **{channel_name}**: {stats['count']} users\n"
+            text += f"🎙️ <b>{channel_name}</b>: {stats['count']} users\n"
             for user in stats['users']:
                 joined_time = user['joined'].strftime('%H:%M')
                 text += f"  👤 {user['name']} (joined at {joined_time})\n"
             text += "\n"
 
-        text += f"📈 **Total users in voice channels: {total_users}**\n"
-        text += f"🔊 **Active channels: {len(channels_stats)}**"
+        text += f"📈 <b>Total users in voice channels: {total_users}</b>\n"
+        text += f"🔊 <b>Active channels: {len(channels_stats)}</b>"
 
-        await message.answer(text, parse_mode="Markdown")
+        await message.answer(text, parse_mode="HTML")
 
     except Exception as e:
         await message.answer(f"❌ Error getting voice stats: {str(e)}")

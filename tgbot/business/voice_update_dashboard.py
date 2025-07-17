@@ -10,31 +10,29 @@ async def create_dashboard_text() -> str:
     """Создает текст для дашборда с информацией о голосовых каналах"""
     async with async_session() as session:
         users_in_channels = await VoiceChannelUser.get_all_users_in_channels(session)
-
+    
     if not users_in_channels:
-        return "🔊 **Voice Channels Dashboard**\n\n📭 No one is currently in voice channels"
-
+        return "🔊 <b>Voice Channels Dashboard</b>\n\n📭 No one is currently in voice channels"
+    
     # Группируем пользователей по каналам
     channels_data = {}
     for user in users_in_channels:
         if user.channel_name not in channels_data:
             channels_data[user.channel_name] = []
         channels_data[user.channel_name].append(user.display_name)
-
+    
     # Формируем текст
-    text = "🔊 **Voice Channels Dashboard**\n\n"
-
+    text = "🔊 <b>Voice Channels Dashboard</b>\n\n"
+    
     for channel_name, users in channels_data.items():
-        text += f"🎙️ **{channel_name}**\n"
+        text += f"🎙️ <b>{channel_name}</b>\n"
         for user in users:
             text += f"  👤 {user}\n"
         text += "\n"
-
+    
     text += f"👥 Total users online: {len(users_in_channels)}"
-
+    
     return text
-
-
 async def update_all_dashboards():
     """Обновляет все активные дашборды"""
     try:
@@ -50,7 +48,7 @@ async def update_all_dashboards():
                         message_id=dashboard.message_id,
                         text=dashboard_text,
                         reply_markup=ds_link_ikb(),
-                        parse_mode="Markdown"
+                        parse_mode="HTML"
                     )
                     logger.info(f"Dashboard updated for chat {dashboard.chat_id}, message {dashboard.message_id}")
                 except Exception as e:
@@ -73,7 +71,7 @@ async def create_new_dashboard(chat_id: int) -> int:
             chat_id=chat_id,
             text=dashboard_text,
             reply_markup=ds_link_ikb(),
-            parse_mode="Markdown"
+            parse_mode="HTML"
         )
 
         # Сохраняем дашборд в базу данных

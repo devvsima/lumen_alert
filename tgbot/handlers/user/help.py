@@ -32,4 +32,4 @@ async def _help_command(message: types.Message) -> None:
 • Someone leaves a voice channel
 • Someone switches between channels"""
 
-    await message.answer(help_text, parse_mode="Markdown")
+    await message.answer(help_text, parse_mode="HTML")
