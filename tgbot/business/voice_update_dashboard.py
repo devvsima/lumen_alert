@@ -1,15 +1,13 @@
 from database.connect import async_session
 from database.services.dashboard import Dashboard
 from database.services.voice_channel import VoiceChannelUser
-from tgbot.keyboards.inline.alert import ds_link_ikb
+from tgbot.keyboards.inline.alert import dashboard_ikb, ds_link_ikb
 from tgbot.loader import bot
 from utils.logging import logger
 
 
-async def create_dashboard_text() -> str:
+async def create_dashboard_text(users_in_channels) -> str:
     """Создает текст для дашборда с информацией о голосовых каналах"""
-    async with async_session() as session:
-        users_in_channels = await VoiceChannelUser.get_all_users_in_channels(session)
 
     if not users_in_channels:
         return "🔊 <b>Voice Channels Dashboard</b>\n\n📭 No one is currently in voice channels"
@@ -22,8 +20,7 @@ async def create_dashboard_text() -> str:
         channels_data[user.channel_name].append(user.display_name)
 
     # Формируем текст
-    text = f"Voice online: {len(users_in_channels)}"
-
+    text = ""
     for channel_name, users in channels_data.items():
         text += f"🎙️ <b>{channel_name}</b>\n"
         for user in users:
@@ -38,10 +35,11 @@ async def create_dashboard_text() -> str:
 async def update_all_dashboards():
     """Обновляет все активные дашборды"""
     try:
-        dashboard_text = await create_dashboard_text()
-
         async with async_session() as session:
+            users_in_channels = await VoiceChannelUser.get_all_users_in_channels(session)
             dashboards = await Dashboard.get_all_dashboards(session)
+
+            dashboard_text = await create_dashboard_text(users_in_channels)
 
             for dashboard in dashboards:
                 try:
@@ -49,7 +47,7 @@ async def update_all_dashboards():
                         chat_id=dashboard.chat_id,
                         message_id=dashboard.message_id,
                         text=dashboard_text,
-                        reply_markup=ds_link_ikb(),
+                        reply_markup=dashboard_ikb(len(users_in_channels)),
                         parse_mode="HTML",
                     )
                     logger.info(
@@ -75,14 +73,15 @@ async def update_all_dashboards():
 async def create_new_dashboard(chat_id: int) -> int:
     """Создает новый дашборд и возвращает message_id"""
     try:
-        dashboard_text = await create_dashboard_text()
-
         sent_message = await bot.send_message(
             chat_id=chat_id, text=dashboard_text, reply_markup=ds_link_ikb(), parse_mode="HTML"
         )
 
         # Сохраняем дашборд в базу данных
         async with async_session() as session:
+            users_in_channels = await VoiceChannelUser.get_all_users_in_channels(session)
+            dashboard_text = await create_dashboard_text(users_in_channels)
+
             await Dashboard.create_dashboard(
                 session, chat_id=chat_id, message_id=sent_message.message_id
             )

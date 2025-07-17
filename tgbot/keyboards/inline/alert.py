@@ -28,6 +28,18 @@ def ds_link_ikb():
     return ikb
 
 
+def dashboard_ikb(online_count: str):
+    ikb = InlineKeyboardMarkup(
+        resize_keyboard=True,
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text=_(f"Online: {online_count}"), url=DISCORD_CHANNEL_URL),
+            ],
+        ],
+    )
+    return ikb
+
+
 def alert_off_on_ikb(is_alert: bool):
     ikb = InlineKeyboardMarkup()
     if is_alert:
