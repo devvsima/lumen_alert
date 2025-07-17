@@ -6,7 +6,6 @@ from utils.logging import logger
 
 
 async def send_alert_to_users(text: str):
-    print("ale")
     try:
         async with async_session() as session:
             user_ids = await TgUser.get_alert_user_ids(session)

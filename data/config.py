@@ -56,6 +56,8 @@ TIME_ZONE = "UTC"
 I18N_DOMAIN = "bot"
 
 IMAGES_DIR = rf"{DIR}/images"
+LOGO_DIR = f"{IMAGES_DIR}/logo.jpg"
+
 LOCALES_DIR = f"{DIR}/data/locales"
 
 database = DatabaseSettings()

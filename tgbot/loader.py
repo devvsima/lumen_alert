@@ -10,7 +10,8 @@ if redis.URL:
     from aiogram.fsm.storage.redis import RedisStorage
     from redis.asyncio.client import Redis
 
-    storage = RedisStorage(Redis.from_url(redis.URL))
+    redis_client = Redis.from_url(redis.URL)
+    storage = RedisStorage(redis_client)
     logger.log("BOT", "Storage: Redis")
 elif not redis.URL:
     from aiogram.fsm.storage.memory import MemoryStorage

@@ -4,7 +4,12 @@ from tgbot.loader import _
 class MessageText:
     @property
     def WELCOME(self):
-        return _("👋, <a href='tg://user?id={}'>{}</a>")
+        return _("""
+👋, <a href='tg://user?id={user_id}'>{name}</a>
+
+This is a Telegram bot for the Discord server <a href="{url}">Lumen</a>.
+Notifications about activity in voice channels will be sent here 👀
+""")
 
     @property
     def INFO(self):
