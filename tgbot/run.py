@@ -12,11 +12,11 @@ from utils.logging import logger
 
 async def on_startup() -> None:
     await set_default_commands()
-    logger.log("BOT", "~ Bot startup")
+    logger.log("BOT", "~ Telegram bot startup")
 
 
 async def on_shutdown() -> None:
-    logger.log("BOT", "~ Bot shutting down...")
+    logger.log("BOT", "~ Telegram bot shutting down...")
 
 
 async def start_telegram_bot():

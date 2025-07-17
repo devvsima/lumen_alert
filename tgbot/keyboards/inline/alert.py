@@ -22,7 +22,7 @@ def ds_link_ikb():
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Присоединиться к Discord канал", url="https://discord.gg/5n29HHkn6R"
+                    text="Присоединиться в Discord канал", url="https://discord.gg/5n29HHkn6R"
                 ),
             ],
         ],

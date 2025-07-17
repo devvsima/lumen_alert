@@ -1,9 +1,9 @@
 from aiogram import F, types
 from aiogram.filters import Command
 from aiogram.filters.state import StateFilter
-from database.models import UserModel
-from database.services import User
 
+from database.models import TgUserModel
+from database.services import TgUser
 from tgbot.handlers.msg_text import msg_text
 from tgbot.keyboards.inline.lang import lang_ikb
 from tgbot.routers import user_router as router
@@ -17,7 +17,7 @@ async def _lang(message: types.Message) -> None:
 
 
 @router.callback_query(F.data.in_(["ru", "uk", "en"]))
-async def _lang_change(callback: types.CallbackQuery, user: UserModel, session) -> None:
+async def _lang_change(callback: types.CallbackQuery, user: TgUserModel, session) -> None:
     """Меняет язык пользователя на выбранный"""
-    await User.update_language(session, user=user, language=callback.data)
+    await TgUser.update_language(session, user=user, language=callback.data)
     await callback.message.edit_text(msg_text.DONE_CHANGE_LANG)

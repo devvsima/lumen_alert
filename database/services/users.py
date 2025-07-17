@@ -1,44 +1,54 @@
-import select
-
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from utils.logging import logger
 
-from ..models.users import UserModel
+from ..models.user import TgUserModel
 
 
-class User:
+class TgUser:
     @staticmethod
-    async def get(session: AsyncSession, user_id: int) -> UserModel | None:
+    async def get(session: AsyncSession, user_id: int) -> TgUserModel | None:
         """Возвращает пользователя по его id"""
-        return await session.get(UserModel, user_id)
+        return await session.get(TgUserModel, user_id)
 
     @staticmethod
     async def get_alert_user_ids(session: AsyncSession) -> list[int]:
-        result = await session.execute(select(UserModel.id).where(UserModel.is_alert == True))
-        user_ids = [row[0] for row in result.all()]
-        return user_ids
+        try:
+            logger.log("DATABASE", "Executing query to get alert user IDs...")
+            result = await session.execute(
+                select(TgUserModel.id).where(TgUserModel.is_alert.is_(True))
+            )
+            user_ids = [row[0] for row in result.fetchall()]
+            logger.log("DATABASE", f"Found {len(user_ids)} users with alerts enabled")
+            return user_ids
+        except Exception as e:
+            logger.error(f"Error in get_alert_user_ids: {e}")
+            return []
 
     @staticmethod
     async def get_or_create(
         session: AsyncSession, user_id: int, username: str = None, language: str = None
-    ) -> UserModel:
-        if user := await User.get(session, user_id):
+    ) -> TgUserModel:
+        if user := await TgUser.get(session, user_id):
             return user, False
-        await User.create(session, user_id=user_id, username=username, language=language)
-        user = await User.get(session, user_id)
+        await TgUser.create(session, user_id=user_id, username=username, language=language)
+        user = await TgUser.get(session, user_id)
         return user, True
 
     @staticmethod
     async def create(
         session: AsyncSession, user_id: int, username: str = None, language: str = None
-    ) -> UserModel:
+    ) -> TgUserModel:
         """Создает нового пользователя"""
         logger.log("DATABASE", f"New user: {user_id} (@{username}) {language}")
-        session.add(UserModel(id=user_id, username=username, language=language))
+        session.add(TgUserModel(id=user_id, username=username, language=language))
         await session.commit()
 
     @staticmethod
-    async def update_username(session: AsyncSession, user: UserModel, username: str = None) -> None:
+    async def update_username(
+        session: AsyncSession, user: TgUserModel, username: str = None
+    ) -> None:
         """Обновляет данные пользователя"""
         user.username = username
         await session.commit()
@@ -46,7 +56,7 @@ class User:
 
     @staticmethod
     async def increment_referral_count(
-        session: AsyncSession, user: UserModel, num: int = 1
+        session: AsyncSession, user: TgUserModel, num: int = 1
     ) -> None:
         """Добавляет приведенного реферала к пользователю {inviter_id}"""
         user.referral += num
@@ -54,14 +64,14 @@ class User:
         logger.log("DATABASE", f"{user.id} (@{user.username}): привел нового пользователя")
 
     @staticmethod
-    async def update_language(session: AsyncSession, user: UserModel, language: str) -> None:
+    async def update_language(session: AsyncSession, user: TgUserModel, language: str) -> None:
         """Изменяет язык пользователя на {language}"""
         user.language = language
         await session.commit()
         logger.log("DATABASE", f"{user.id} (@{user.username}): изменил язык на - {language}")
 
     @staticmethod
-    async def update_isbanned(session: AsyncSession, user: UserModel, is_banned: bool) -> None:
+    async def update_isbanned(session: AsyncSession, user: TgUserModel, is_banned: bool) -> None:
         """Меняет статус блокировки пользователя на {is_banned}"""
         user.is_banned = is_banned
         await session.commit()
