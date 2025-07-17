@@ -1,7 +1,7 @@
-from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from tgbot.loader import _, dp
+from data.config import DISCORD_CHANNEL_URL
+from tgbot.loader import _
 
 
 def alert_command_ikb():
@@ -9,7 +9,7 @@ def alert_command_ikb():
         resize_keyboard=True,
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="Уведоления 🔔", callback_data="alert_settings"),
+                InlineKeyboardButton(text=_("Notifications 🔔"), callback_data="alert_settings"),
             ],
         ],
     )
@@ -21,9 +21,7 @@ def ds_link_ikb():
         resize_keyboard=True,
         inline_keyboard=[
             [
-                InlineKeyboardButton(
-                    text="Присоединиться в Discord канал", url="https://discord.gg/5n29HHkn6R"
-                ),
+                InlineKeyboardButton(text=_("Join the Discord channel"), url=DISCORD_CHANNEL_URL),
             ],
         ],
     )
@@ -33,7 +31,7 @@ def ds_link_ikb():
 def alert_off_on_ikb(is_alert: bool):
     ikb = InlineKeyboardMarkup()
     if is_alert:
-        ikb.add(InlineKeyboardButton(text="Выключить 🔕", callback_data="alert_off"))
+        ikb.add(InlineKeyboardButton(text=_("Turn off 🔕"), callback_data="alert_off"))
     else:
-        ikb.add(InlineKeyboardButton(text="Включить 🔔", callback_data="alert_on"))
+        ikb.add(InlineKeyboardButton(text=_("Turn on 🔔"), callback_data="alert_on"))
     return ikb

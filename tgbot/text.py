@@ -1,7 +1,7 @@
 from tgbot.loader import _
 
 
-class MsgText:
+class MessageText:
     @property
     def WELCOME(self):
         return _("👋, <a href='tg://user?id={}'>{}</a>")
@@ -28,4 +28,4 @@ class MsgText:
         return _("Your language has been successfully changed! ✅", locale=language)
 
 
-msg_text = MsgText()
+message_text = MessageText()

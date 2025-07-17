@@ -1,5 +1,5 @@
 from sqlalchemy import BigInteger, Boolean, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseModel
 
@@ -22,3 +22,5 @@ class TgUserModel(BaseModel):
     referral: Mapped[int] = mapped_column(Integer, server_default="0")
     status: Mapped[int] = mapped_column(Integer, server_default="1")
     is_alert: Mapped[bool] = mapped_column(Boolean, server_default="True")
+
+    groups = relationship("GroupMemberModel", back_populates="user")

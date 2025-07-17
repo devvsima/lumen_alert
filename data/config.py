@@ -49,6 +49,8 @@ class TelegramBotSettings:
     MODERATOR_GROUP: int = env.int("MODERATOR_GROUP_ID", default=None)
 
 
+DISCORD_CHANNEL_URL = env.str("DISCORD_CHANNEL_URL", default=None)
+
 TIME_ZONE = "UTC"
 
 I18N_DOMAIN = "bot"

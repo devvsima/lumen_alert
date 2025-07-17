@@ -5,16 +5,16 @@ from aiogram.filters.state import StateFilter
 from database.models import TgUserModel
 from database.services import TgUser
 from tgbot.filters.kb_filter import LangCallback
-from tgbot.text import msg_text
 from tgbot.keyboards.inline.lang import lang_ikb
 from tgbot.routers import user_router as router
+from tgbot.text import message_text as mt
 
 
 @router.message(StateFilter(None), Command("language"))
 @router.message(StateFilter(None), Command("lang"))
 async def _lang(message: types.Message) -> None:
     """Отображает список доступных языков и позволяет выбрать предпочтительный"""
-    await message.answer(msg_text.CHANGE_LANG, reply_markup=lang_ikb())
+    await message.answer(mt.CHANGE_LANG, reply_markup=lang_ikb())
 
 
 @router.callback_query(StateFilter(None), LangCallback.filter())
@@ -28,4 +28,4 @@ async def _change_lang(
         id=user.id,
         language=language,
     )
-    await callback.message.edit_text(msg_text.DONE_CHANGE_LANG(language))
+    await callback.message.edit_text(mt.DONE_CHANGE_LANG(language))

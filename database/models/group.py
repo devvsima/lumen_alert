@@ -25,4 +25,4 @@ class GroupMemberModel(BaseModel):
     )
 
     group = relationship("GroupModel", back_populates="members")
-    user = relationship("UserModel", back_populates="groups")
+    user = relationship("TgUserModel", back_populates="groups")

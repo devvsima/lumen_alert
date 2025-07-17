@@ -3,9 +3,9 @@ from aiogram.filters import Command
 from aiogram.filters.state import StateFilter
 
 from database.models.telegram_user import TgUserModel
-from tgbot.text import msg_text
 from tgbot.loader import bot
 from tgbot.routers import user_router as router
+from tgbot.text import message_text as mt
 from utils.base62 import encode_base62
 
 
@@ -16,7 +16,7 @@ async def _invite_link_command(message: types.Message, user: TgUserModel) -> Non
     user_code: str = encode_base62(message.from_user.id)
 
     await message.answer(
-        msg_text.INVITE_FRIENDS.format(
+        mt.INVITE_FRIENDS.format(
             user.referral,
             bot_user.username,
             user_code,

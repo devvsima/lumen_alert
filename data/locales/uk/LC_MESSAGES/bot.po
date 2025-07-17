@@ -7,26 +7,49 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-02-01 15:02+0200\n"
-"PO-Revision-Date: 2024-09-07 14:40+0300\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: uk\n"
+"POT-Creation-Date: 2025-07-17 10:27+0300\n"
+"PO-Revision-Date: 2025-07-17 10:29+0300\n"
+"Last-Translator: \n"
 "Language-Team: uk <LL@li.org>\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2)\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2);\n"
+"Generated-By: Babel 2.17.0\n"
+"X-Generator: Poedit 3.5\n"
 
-#: app/handlers/msg_text.py:11
+#: tgbot/commands.py:8
+msgid "start chat"
+msgstr "почати чат"
+
+#: tgbot/commands.py:9
+msgid "change language"
+msgstr "змінити мову"
+
+#: tgbot/commands.py:10
+msgid "bot description"
+msgstr "опис бота"
+
+#: tgbot/commands.py:11
+msgid "referal system"
+msgstr "реферальна система"
+
+#: tgbot/commands.py:21
+msgid "admin panel"
+msgstr "адмін панель"
+
+#: tgbot/text.py:7
+#, python-brace-format
 msgid "👋, <a href='tg://user?id={}'>{}</a>"
-msgstr ""
+msgstr "👋, <a href='tg://user?id={}'>{}</a>"
 
-#: app/handlers/msg_text.py:15
+#: tgbot/text.py:11
 msgid "Bot Info:"
 msgstr "Інформація про бота:"
 
-#: app/handlers/msg_text.py:19
+#: tgbot/text.py:16
+#, python-brace-format
 msgid ""
 "Invited users: <b>{}</b>\n"
 "\n"
@@ -38,34 +61,42 @@ msgstr ""
 "Посилання для друзів:\n"
 "<code>https://t.me/{}?start={}</code>"
 
-#: app/handlers/msg_text.py:25
+#: tgbot/text.py:21
 msgid "You're the administrator!"
 msgstr "Ви адміністратор!"
 
-#: app/handlers/msg_text.py:29
+#: tgbot/text.py:25
 msgid "Select the language you want to switch to: 🌐"
 msgstr "Виберіть мову, на яку ви хочете переключитися: 🌐"
 
-#: app/handlers/msg_text.py:33
+#: tgbot/text.py:28
 msgid "Your language has been successfully changed! ✅"
 msgstr "Вашу мову успішно змінено! ✅"
 
-#: app/others/commands.py:8
-msgid "start chat"
-msgstr "почати чат"
+#: tgbot/keyboards/inline/alert.py:12
+msgid "Notifications 🔔"
+msgstr "Сповіщення 🔔"
 
-#: app/others/commands.py:9
-msgid "change language"
-msgstr "змінити мову"
+#: tgbot/keyboards/inline/alert.py:24
+msgid "Join the Discord channel"
+msgstr "Приєднуйтесь до каналу Discord"
 
-#: app/others/commands.py:10
-msgid "bot description"
-msgstr "опис бота"
+#: tgbot/keyboards/inline/alert.py:34
+msgid "Turn off 🔕"
+msgstr "Вимкніть 🔕"
 
-#: app/others/commands.py:11
-msgid "referal system"
-msgstr "реферальна система"
+#: tgbot/keyboards/inline/alert.py:36
+msgid "Turn on 🔔"
+msgstr "Увімкніть 🔔"
 
-#: app/others/commands.py:21
-msgid "admin panel"
-msgstr "адмін панель"
+#~ msgid "Уведоления 🔔"
+#~ msgstr "Сповіщення 🔔"
+
+#~ msgid "Присоединиться в Discord канал"
+#~ msgstr "Приєднатися до Discord каналу"
+
+#~ msgid "Выключить 🔕"
+#~ msgstr "Вимкнути 🔕"
+
+#~ msgid "Включить 🔔"
+#~ msgstr "Увімкнути 🔔"
