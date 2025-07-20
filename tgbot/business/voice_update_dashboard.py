@@ -10,7 +10,7 @@ async def create_dashboard_text(users_in_channels) -> str:
     """Создает текст для дашборда с информацией о голосовых каналах"""
 
     if not users_in_channels:
-        return "🔊 <b>Voice Channels Dashboard</b>\n\n📭 No one is currently in voice channels"
+        return "🔊 <b>Voice Channels Dashboard</b>"
 
     # Группируем пользователей по каналам
     channels_data = {}

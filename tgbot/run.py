@@ -20,14 +20,21 @@ async def on_shutdown() -> None:
 
 
 async def start_telegram_bot():
-    setup_middlewares(dp)
-    setup_handlers(dp)
-    dp.startup.register(on_startup)
-    dp.shutdown.register(on_shutdown)
+    try:
+        setup_middlewares(dp)
+        setup_handlers(dp)
+        dp.startup.register(on_startup)
+        dp.shutdown.register(on_shutdown)
 
-    await bot(DeleteWebhook(drop_pending_updates=telegram_bot.SKIP_UPDATES))
+        await bot(DeleteWebhook(drop_pending_updates=telegram_bot.SKIP_UPDATES))
 
-    await dp.start_polling(bot)
+        await dp.start_polling(bot)
+    except Exception as e:
+        logger.error(f"Telegram bot error: {e}")
+        raise
+    finally:
+        logger.log("BOT", "~ Telegram bot cleanup")
+        await bot.session.close()
 
 
 if __name__ == "__main__":
