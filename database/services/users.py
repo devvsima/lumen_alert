@@ -1,4 +1,81 @@
-from sqlalchemy import select
+# ...existing code...
+
+
+class TgUser:
+    # ...existing code...
+
+    @staticmethod
+    async def get_users_for_join_alerts(session: AsyncSession) -> list[int]:
+        """Получает список ID пользователей, которые хотят получать уведомления о присоединении к каналам"""
+        result = await session.execute(
+            select(TgUserModel.id).where(
+                and_(
+                    TgUserModel.is_alert.is_(True),
+                    TgUserModel.alert_on_join.is_(True),
+                    TgUserModel.status >= TgUserStatus.TgUser,
+                )
+            )
+        )
+        return [row[0] for row in result.fetchall()]
+
+    @staticmethod
+    async def get_users_for_leave_alerts(session: AsyncSession) -> list[int]:
+        """Получает список ID пользователей, которые хотят получать уведомления о покидании каналов"""
+        result = await session.execute(
+            select(TgUserModel.id).where(
+                and_(
+                    TgUserModel.is_alert.is_(True),
+                    TgUserModel.alert_on_leave.is_(True),
+                    TgUserModel.status >= TgUserStatus.TgUser,
+                )
+            )
+        )
+        return [row[0] for row in result.fetchall()]
+
+    @staticmethod
+    async def get_users_for_switch_alerts(session: AsyncSession) -> list[int]:
+        """Получает список ID пользователей, которые хотят получать уведомления о переключении каналов"""
+        result = await session.execute(
+            select(TgUserModel.id).where(
+                and_(
+                    TgUserModel.is_alert.is_(True),
+                    TgUserModel.alert_on_switch.is_(True),
+                    TgUserModel.status >= TgUserStatus.TgUser,
+                )
+            )
+        )
+        return [row[0] for row in result.fetchall()]
+
+    @staticmethod
+    async def update_alert_settings(
+        session: AsyncSession,
+        user_id: int,
+        alert_on_join: bool = None,
+        alert_on_leave: bool = None,
+        alert_on_switch: bool = None,
+    ) -> bool:
+        """Обновляет настройки уведомлений пользователя"""
+        try:
+            update_data = {}
+            if alert_on_join is not None:
+                update_data[TgUserModel.alert_on_join] = alert_on_join
+            if alert_on_leave is not None:
+                update_data[TgUserModel.alert_on_leave] = alert_on_leave
+            if alert_on_switch is not None:
+                update_data[TgUserModel.alert_on_switch] = alert_on_switch
+
+            if update_data:
+                await session.execute(
+                    update(TgUserModel).where(TgUserModel.id == user_id).values(**update_data)
+                )
+                await session.commit()
+            return True
+        except Exception:
+            await session.rollback()
+            return False
+
+
+# ...existing code...from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.services.base import BaseService

@@ -1,3 +1,4 @@
+from .alerts import router
 from .dashboard import router
 from .dashboard_management import router
 from .help import router

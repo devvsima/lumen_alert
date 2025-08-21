@@ -3,7 +3,7 @@ from database.connect import async_session
 from database.services.ds_users import DsUser
 from database.services.voice_channel import VoiceChannelUser
 from dsbot.loader import dsbot
-from tgbot.business.voice_update_alert import send_alert_to_users
+from tgbot.business.voice_update_alert import send_join_alert, send_leave_alert, send_switch_alert
 from tgbot.business.voice_update_dashboard import update_all_dashboards
 from utils.logging import logger
 
@@ -35,7 +35,7 @@ async def on_voice_state_update(member, before, after):
 
             text = f"<code>{member.display_name}</code> joined the voice channel - {after.channel.name}"
             logger.info(f"User {member.display_name} joined voice channel {after.channel.name}")
-            await send_alert_to_users(text=text)
+            await send_join_alert(text=text)
 
         # Если пользователь покинул канал
         elif before.channel is not None and after.channel is None:
@@ -45,7 +45,7 @@ async def on_voice_state_update(member, before, after):
                 f"<code>{member.display_name}</code> left the voice channel - {before.channel.name}"
             )
             logger.info(f"User {member.display_name} left voice channel {before.channel.name}")
-            # await send_alert_to_users(text=text)
+            await send_leave_alert(text=text)
 
         # Если пользователь переключился между каналами
         elif (
@@ -66,7 +66,7 @@ async def on_voice_state_update(member, before, after):
             logger.info(
                 f"User {member.display_name} switched from {before.channel.name} to {after.channel.name}"
             )
-            # await send_alert_to_users(text=text)
+            await send_switch_alert(text=text)
 
     # Обновляем все дашборды после любого изменения
     await update_all_dashboards()
