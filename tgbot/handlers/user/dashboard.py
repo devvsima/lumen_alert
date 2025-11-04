@@ -2,8 +2,7 @@ from aiogram import types
 from aiogram.filters import Command
 from aiogram.filters.state import StateFilter
 
-from tgbot.business.voice_update_dashboard import (create_new_dashboard,
-                                                   update_all_dashboards)
+from tgbot.business.voice_update_dashboard import create_new_dashboard, update_all_dashboards
 from tgbot.routers import user_router as router
 from tgbot.text import message_text as mt
 
@@ -14,7 +13,9 @@ async def _create_dashboard_command(message: types.Message) -> None:
     try:
         await message.answer("📊 Creating voice channels dashboard...")
         dashboard_message_id = await create_new_dashboard(message.chat.id)
-        await message.answer(f"✅ Dashboard created successfully! Message ID: {dashboard_message_id}")
+        await message.answer(
+            f"✅ Dashboard created successfully! Message ID: {dashboard_message_id}"
+        )
     except Exception as e:
         await message.answer(f"❌ Error creating dashboard: {str(e)}")
 
