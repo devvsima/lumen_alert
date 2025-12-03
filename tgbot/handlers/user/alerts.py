@@ -1,4 +1,4 @@
-from aiogram import types
+from aiogram import F, types
 from aiogram.filters import Command
 from aiogram.filters.state import StateFilter
 
@@ -8,6 +8,48 @@ from tgbot.business.alert_settings import AlertSettings
 from tgbot.keyboards.inline.alert import alert_settings_ikb
 from tgbot.routers import user_router as router
 from utils.logging import logger
+
+
+@router.callback_query(F.data == "alert_settings", StateFilter(None))
+async def alert_settings_command(callback: types.CallbackQuery) -> None:
+    """Показывает настройки уведомлений пользователя"""
+    try:
+        async with async_session() as session:
+            user = await TgUser.get_by_id(session, callback.from_user.id)
+
+            if not user:
+                await callback.message.answer("❌ Пользователь не найден в базе данных.")
+                return
+
+            # Получаем настройки через новый класс
+            settings = await AlertSettings.get_user_settings(session, callback.from_user.id)
+
+            settings_text = (
+                "🔔 <b>Настройки уведомлений</b>\n\n"
+                f"📥 Присоединение к каналу: {'✅' if settings['alert_on_join'] else '❌'}\n"
+                f"📤 Покидание канала: {'✅' if settings['alert_on_leave'] else '❌'}\n"
+                f"🔄 Переключение каналов: {'✅' if settings['alert_on_switch'] else '❌'}\n\n"
+                f"🔔 Общие уведомления: {'✅' if user.is_alert else '❌'}\n\n"
+                "💡 <i>Настройки сохраняются автоматически</i>"
+            )
+
+            # Создаем временный объект для клавиатуры
+            class TempUser:
+                def __init__(self, user, settings):
+                    self.id = user.id
+                    self.is_alert = user.is_alert
+                    self.alert_on_join = settings["alert_on_join"]
+                    self.alert_on_leave = settings["alert_on_leave"]
+                    self.alert_on_switch = settings["alert_on_switch"]
+
+            temp_user = TempUser(user, settings)
+
+            await callback.message.answer(
+                settings_text, reply_markup=alert_settings_ikb(temp_user), parse_mode="HTML"
+            )
+    except Exception as e:
+        logger.error(f"Error in alert_settings_command: {e}")
+        await callback.message.answer(f"❌ Ошибка при получении настроек: {str(e)}")
 
 
 @router.message(Command("settings"), StateFilter(None))
