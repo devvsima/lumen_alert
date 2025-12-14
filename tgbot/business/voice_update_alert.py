@@ -7,17 +7,18 @@ from utils.logging import logger
 
 async def send_join_alert(text: str):
     """Отправляет уведомления о присоединении к голосовому каналу"""
-    try:
-        async with async_session() as session:
-            user_ids = await TgUser.get_users_for_join_alerts(session)
-
-            for user_id in user_ids:
+    async with async_session() as session:
+        user_ids = await TgUser.get_users_for_join_alerts(session)
+        print(user_ids)
+        for user_id in user_ids:
+            try:
                 await bot.send_message(
                     chat_id=user_id, text=text, reply_markup=ds_link_ikb(), parse_mode="HTML"
                 )
-                logger.info(f"Join alert sent to {user_id} | {text}")
-    except Exception as e:
-        logger.error(f"Error in send_join_alert: {e}")
+            except Exception as e:
+                logger.error(f"Error in send_join_alert: {e}")
+
+            logger.info(f"Join alert sent to {user_id} | {text}")
 
 
 async def send_leave_alert(text: str):
