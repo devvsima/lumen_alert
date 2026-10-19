@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import BigInteger, DateTime, String
+from sqlalchemy import BigInteger, DateTime, Index
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import BaseModel
@@ -8,6 +8,7 @@ from .base import BaseModel
 
 class DashboardModel(BaseModel):
     __tablename__ = "dashboards"
+    __table_args__ = (Index("uq_dashboard_chat", "chat_id", unique=True),)
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     chat_id: Mapped[int] = mapped_column(BigInteger, nullable=False)

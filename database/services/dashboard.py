@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.services.base import BaseService
@@ -25,6 +25,33 @@ class Dashboard(BaseService):
         )
         await session.commit()
         return dashboard
+
+    @staticmethod
+    async def get_by_chat_id(session: AsyncSession, chat_id: int) -> DashboardModel | None:
+        result = await session.execute(
+            select(DashboardModel).where(DashboardModel.chat_id == chat_id)
+        )
+        return result.scalar_one_or_none()
+
+    @staticmethod
+    async def replace_dashboard(
+        session: AsyncSession, chat_id: int, message_id: int
+    ) -> DashboardModel | None:
+        previous = await Dashboard.get_by_chat_id(session, chat_id)
+        if previous is not None:
+            await session.delete(previous)
+            await session.flush()
+        next_id = await session.scalar(
+            select(func.coalesce(func.max(DashboardModel.id), 0) + 1)
+        )
+        dashboard = DashboardModel(
+            id=next_id,
+            chat_id=chat_id,
+            message_id=message_id,
+        )
+        session.add(dashboard)
+        await session.commit()
+        return previous
 
     @staticmethod
     async def get_all_dashboards(session: AsyncSession) -> List[DashboardModel]:

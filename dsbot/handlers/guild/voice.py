@@ -2,6 +2,7 @@ from data.config import discord_bot
 from database.connect import async_session
 from database.services.ds_users import DsUser
 from database.services.voice_channel import VoiceChannelUser
+from database.services.sources import DiscordSource
 from dsbot.loader import dsbot
 from tgbot.business.voice_update_alert import send_join_alert, send_leave_alert, send_switch_alert
 from tgbot.business.voice_update_dashboard import update_all_dashboards
@@ -14,6 +15,12 @@ async def on_voice_state_update(member, before, after):
         return
 
     async with async_session() as session:
+        voice_channels = [
+            channel for channel in member.guild.channels if channel.type.name == "voice"
+        ]
+        await DiscordSource.sync_guild(
+            session, member.guild.id, member.guild.name, voice_channels
+        )
         # Создаем или обновляем пользователя Discord
         await DsUser.get_or_create(
             session,
@@ -35,7 +42,7 @@ async def on_voice_state_update(member, before, after):
 
             text = f"<code>{member.display_name}</code> joined the voice channel - {after.channel.name}"
             logger.info(f"User {member.display_name} joined voice channel {after.channel.name}")
-            await send_join_alert(text=text)
+            await send_join_alert(text=text, guild_id=member.guild.id, channel_id=after.channel.id)
 
         # Если пользователь покинул канал
         elif before.channel is not None and after.channel is None:
@@ -45,7 +52,7 @@ async def on_voice_state_update(member, before, after):
                 f"<code>{member.display_name}</code> left the voice channel - {before.channel.name}"
             )
             logger.info(f"User {member.display_name} left voice channel {before.channel.name}")
-            await send_leave_alert(text=text)
+            await send_leave_alert(text=text, guild_id=member.guild.id, channel_id=before.channel.id)
 
         # Если пользователь переключился между каналами
         elif (
@@ -66,7 +73,12 @@ async def on_voice_state_update(member, before, after):
             logger.info(
                 f"User {member.display_name} switched from {before.channel.name} to {after.channel.name}"
             )
-            await send_switch_alert(text=text)
+            await send_switch_alert(
+                text=text,
+                guild_id=member.guild.id,
+                before_channel_id=before.channel.id,
+                after_channel_id=after.channel.id,
+            )
 
     # Обновляем все дашборды после любого изменения
     await update_all_dashboards()

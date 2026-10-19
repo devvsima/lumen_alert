@@ -5,5 +5,6 @@ from .help import router
 from .invite import router
 from .lang import router
 from .voice_admin import router
+from .sources import router
 
 __all__ = ["router"]

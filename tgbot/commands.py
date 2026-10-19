@@ -10,6 +10,7 @@ def get_default_commands(lang: str = "en"):
         BotCommand(command="/help", description=_("bot description", locale=lang)),
         BotCommand(command="/invite", description=_("referal system", locale=lang)),
         BotCommand(command="/settings", description=_("alert settings", locale=lang)),
+        BotCommand(command="/sources", description=_("notification sources", locale=lang)),
     ]
 
     return commands

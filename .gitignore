@@ -19,3 +19,6 @@
 
 **/database/migrations/versions/*
 !**/database/migrations/versions/__init__.py
+!**/database/migrations/versions/c1a2b3c4d5e6_add_telegram_source_subscriptions.py
+!**/database/migrations/versions/d4e5f6a7b8c9_add_channel_access_flag.py
+!**/database/migrations/versions/e5f6a7b8c9d0_add_unique_dashboard_per_chat.py

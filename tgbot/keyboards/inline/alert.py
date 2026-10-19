@@ -119,6 +119,12 @@ def alert_settings_ikb(user) -> InlineKeyboardMarkup:
             callback_data=f"toggle_all_{user.id}",
         )
     )
+    builder.row(
+        InlineKeyboardButton(
+            text="🎯 Источники уведомлений",
+            callback_data="source_settings",
+        )
+    )
     # builder.row(
     #     InlineKeyboardButton(text="🔄 Обновить", callback_data=f"refresh_settings_{user.id}")
     # )

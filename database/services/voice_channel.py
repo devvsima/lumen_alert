@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.services.base import BaseService
 
 from ..models.voice_channel import VoiceChannelUserModel
+from ..models.source import DiscordChannelModel
 
 
 class VoiceChannelUser(BaseService):
@@ -51,6 +52,24 @@ class VoiceChannelUser(BaseService):
             select(VoiceChannelUserModel).order_by(
                 VoiceChannelUserModel.channel_name,
                 VoiceChannelUserModel.display_name
+            )
+        )
+        return result.scalars().all()
+
+    @staticmethod
+    async def get_users_in_allowed_channels(
+        session: AsyncSession,
+    ) -> List[VoiceChannelUserModel]:
+        result = await session.execute(
+            select(VoiceChannelUserModel)
+            .join(
+                DiscordChannelModel,
+                DiscordChannelModel.id == VoiceChannelUserModel.channel_id,
+            )
+            .where(DiscordChannelModel.is_enabled.is_(True))
+            .order_by(
+                VoiceChannelUserModel.channel_name,
+                VoiceChannelUserModel.display_name,
             )
         )
         return result.scalars().all()

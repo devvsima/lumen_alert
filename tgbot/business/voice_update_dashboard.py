@@ -36,7 +36,7 @@ async def update_all_dashboards():
     """Обновляет все активные дашборды"""
     try:
         async with async_session() as session:
-            users_in_channels = await VoiceChannelUser.get_all_users_in_channels(session)
+            users_in_channels = await VoiceChannelUser.get_users_in_allowed_channels(session)
             dashboards = await Dashboard.get_all_dashboards(session)
 
             dashboard_text = await create_dashboard_text(users_in_channels)
@@ -73,18 +73,29 @@ async def update_all_dashboards():
 async def create_new_dashboard(chat_id: int) -> int:
     """Создает новый дашборд и возвращает message_id"""
     try:
-        sent_message = await bot.send_message(
-            chat_id=chat_id, text=dashboard_text, reply_markup=ds_link_ikb(), parse_mode="HTML"
-        )
-
-        # Сохраняем дашборд в базу данных
         async with async_session() as session:
-            users_in_channels = await VoiceChannelUser.get_all_users_in_channels(session)
+            users_in_channels = await VoiceChannelUser.get_users_in_allowed_channels(session)
             dashboard_text = await create_dashboard_text(users_in_channels)
 
-            await Dashboard.create_dashboard(
+        sent_message = await bot.send_message(
+            chat_id=chat_id,
+            text=dashboard_text,
+            reply_markup=dashboard_ikb(len(users_in_channels)),
+            parse_mode="HTML",
+        )
+
+        async with async_session() as session:
+            previous = await Dashboard.replace_dashboard(
                 session, chat_id=chat_id, message_id=sent_message.message_id
             )
+        if previous is not None:
+            try:
+                await bot.delete_message(chat_id=chat_id, message_id=previous.message_id)
+            except Exception as e:
+                logger.warning(
+                    f"Failed to delete replaced dashboard "
+                    f"{chat_id}:{previous.message_id}: {e}"
+                )
 
         logger.info(f"New dashboard created for chat {chat_id}, message {sent_message.message_id}")
         return sent_message.message_id
