@@ -7,8 +7,8 @@ class MessageText:
         return _("""
 👋, <a href='tg://user?id={user_id}'>{name}</a>
 
-This is a Telegram bot for the Discord server <a href="{url}">Lumen</a>.
-Notifications about activity in voice channels will be sent here 👀
+Это Telegram-бот для уведомлений об активности на Discord-серверах.
+Уведомления о голосовых каналах будут отправляться сюда 👀
 """)
 
     @property

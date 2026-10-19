@@ -4,6 +4,7 @@ from aiogram.filters.state import StateFilter
 
 from tgbot.routers import user_router as router
 from tgbot.text import message_text as mt
+from tgbot.loader import _
 
 
 @router.message(Command("help"), StateFilter(None))
@@ -11,25 +12,22 @@ async def _help_command(message: types.Message) -> None:
     """Дает описание бота"""
     help_text = f"""{mt.INFO}
 
-**📊 Dashboard Commands:**
-• `/create_dashboard` - Create new voice channels dashboard
-• `/update_dashboards` - Force update all dashboards
-• `/remove_dashboard` - Remove dashboard (reply to dashboard message)
-• `/list_dashboards` - Show all active dashboards in this chat
+{_("📊 Команды дашборда:")}
+• `/create_dashboard` - {_("создать дашборд голосовых каналов")}
+• `/update_dashboards` - {_("принудительно обновить дашборды")}
+• `/remove_dashboard` - {_("удалить дашборд ответом на его сообщение")}
+• `/list_dashboards` - {_("показать дашборд текущего чата")}
 
-**� Voice Monitoring:**
-• `/voice_stats` - Show detailed voice channels statistics
-• `/clear_voice_channels` - Clear all voice channel records (admin)
+{_("🎙️ Мониторинг голосовых каналов:")}
+• `/voice_stats` - {_("показать статистику голосовых каналов")}
+• `/clear_voice_channels` - {_("очистить записи голосовых каналов")}
 
-**�🔊 Voice Channel Features:**
-• Real-time monitoring of Discord voice channels
-• Automatic dashboard updates when users join/leave
-• Shows current users in each voice channel
-• Total users count
+{_("🔊 Возможности:")}
+• {_("мониторинг голосовых каналов в реальном времени")}
+• {_("автоматическое обновление дашбордов")}
+• {_("список пользователей в каждом канале")}
+• {_("общее количество пользователей")}
 
-**ℹ️ Dashboard automatically updates when:**
-• Someone joins a voice channel
-• Someone leaves a voice channel
-• Someone switches between channels"""
+{_("ℹ️ Дашборд обновляется при входе, выходе и переходе между каналами.")}"""
 
     await message.answer(help_text, parse_mode="HTML")

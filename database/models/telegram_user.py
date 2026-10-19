@@ -35,5 +35,6 @@ class TgUserModel(BaseModel):
 
     # Общий переключатель уведомлений (для обратной совместимости)
     is_alert: Mapped[bool] = mapped_column(Boolean, server_default="True")
+    sources_configured: Mapped[bool] = mapped_column(Boolean, server_default="False")
 
     groups = relationship("GroupMemberModel", back_populates="user")

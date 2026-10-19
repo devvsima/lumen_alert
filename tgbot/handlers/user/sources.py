@@ -1,13 +1,20 @@
 import discord
 from aiogram import F, types
+from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
 from aiogram.filters.state import StateFilter
 
 from database.connect import async_session
 from database.services.sources import DiscordSource
 from dsbot.loader import dsbot
-from tgbot.keyboards.inline.source import source_channels_ikb, source_guilds_ikb
+from tgbot.keyboards.inline.source import (
+    source_channels_ikb,
+    source_guilds_ikb,
+    source_search_cancel_ikb,
+)
 from tgbot.routers import user_router as router
+from tgbot.loader import _
+from tgbot.states import SourceSearchState
 from utils.logging import logger
 
 
@@ -22,19 +29,28 @@ async def _sync_sources() -> None:
             await DiscordSource.sync_guild(session, guild.id, guild.name, channels)
 
 
-async def _render_guilds(message: types.Message, user_id: int) -> None:
+async def _render_guilds(
+    message: types.Message, user_id: int, edit: bool = False
+) -> None:
     await _sync_sources()
     async with async_session() as session:
+        await DiscordSource.ensure_default_subscriptions(session, user_id)
         guilds = await DiscordSource.get_guilds(session)
         subscribed = await DiscordSource.get_user_guild_ids(session, user_id)
     if not guilds:
-        await message.answer("❌ Discord-серверы пока недоступны.")
+        await message.answer(_("❌ Discord-серверы пока недоступны."))
         return
-    await message.answer(
-        "🔔 <b>Источники уведомлений</b>\n\nВыберите Discord-сервер:",
-        reply_markup=source_guilds_ikb(guilds, subscribed),
-        parse_mode="HTML",
+    text = (
+        _("🔔 <b>Источники уведомлений</b>\n\n")
+        + _("🟢 — уведомления включены\n")
+        + _("🔴 — уведомления выключены\n\n")
+        + _("Выберите Discord-сервер:")
     )
+    markup = source_guilds_ikb(guilds, subscribed)
+    if edit:
+        await message.edit_text(text, reply_markup=markup, parse_mode="HTML")
+    else:
+        await message.answer(text, reply_markup=markup, parse_mode="HTML")
 
 
 @router.message(Command("sources"), StateFilter(None))
@@ -43,7 +59,7 @@ async def sources_command(message: types.Message) -> None:
         await _render_guilds(message, message.from_user.id)
     except Exception:
         logger.exception("Failed to display notification sources")
-        await message.answer("❌ Не удалось загрузить список источников.")
+        await message.answer(_("❌ Не удалось загрузить список источников."))
 
 
 @router.callback_query(F.data == "source_settings")
@@ -56,24 +72,90 @@ async def source_settings_callback(callback: types.CallbackQuery) -> None:
 @router.callback_query(F.data == "source_back")
 async def source_back_callback(callback: types.CallbackQuery) -> None:
     await callback.answer()
-    await _render_guilds(callback.message, callback.from_user.id)
+    await _render_guilds(callback.message, callback.from_user.id, edit=True)
 
 
 @router.callback_query(F.data.startswith("source_guild_"))
 async def source_guild_callback(callback: types.CallbackQuery) -> None:
     guild_id = int(callback.data.removeprefix("source_guild_"))
     async with async_session() as session:
+        await DiscordSource.ensure_default_subscriptions(session, callback.from_user.id)
         channels = await DiscordSource.get_channels(session, guild_id)
         subscribed = await DiscordSource.get_user_channel_ids(session, callback.from_user.id)
     if not channels:
-        await callback.answer("Для этого сервера нет голосовых каналов.", show_alert=True)
+        await callback.answer(_("Для этого сервера нет голосовых каналов."), show_alert=True)
         return
     await callback.message.edit_text(
-        "🔔 <b>Выбор каналов</b>\n\nОтметьте каналы, откуда получать уведомления:",
+        _("🔔 <b>Выбор каналов</b>\n\nОтметьте каналы, откуда получать уведомления:"),
         reply_markup=source_channels_ikb(guild_id, channels, subscribed),
         parse_mode="HTML",
     )
     await callback.answer()
+
+
+@router.callback_query(F.data == "source_noop")
+async def source_noop_callback(callback: types.CallbackQuery) -> None:
+    await callback.answer()
+
+
+@router.callback_query(F.data == "source_search")
+async def source_search_callback(
+    callback: types.CallbackQuery, state: FSMContext
+) -> None:
+    await state.set_state(SourceSearchState.waiting)
+    await callback.message.edit_text(
+        _("🔎 Введите название Discord-сервера для поиска:"),
+        reply_markup=source_search_cancel_ikb(),
+    )
+    await callback.answer()
+
+
+@router.callback_query(F.data == "source_search_cancel")
+async def source_search_cancel_callback(
+    callback: types.CallbackQuery, state: FSMContext
+) -> None:
+    await state.clear()
+    await _render_guilds(callback.message, callback.from_user.id, edit=True)
+    await callback.answer()
+
+
+@router.message(SourceSearchState.waiting)
+async def source_search_message(message: types.Message, state: FSMContext) -> None:
+    query = (message.text or "").strip().casefold()
+    await state.clear()
+    await _sync_sources()
+    async with async_session() as session:
+        await DiscordSource.ensure_default_subscriptions(session, message.from_user.id)
+        guilds = [
+            guild
+            for guild in await DiscordSource.get_guilds(session)
+            if query in (guild.name or "").casefold()
+        ]
+        subscribed = await DiscordSource.get_user_guild_ids(session, message.from_user.id)
+    if not guilds:
+        await message.answer(_("❌ Серверы по вашему запросу не найдены."))
+        return
+    await message.answer(
+        _("🔎 Результаты поиска:"),
+        reply_markup=source_guilds_ikb(guilds, subscribed),
+    )
+
+
+@router.callback_query(F.data.startswith("source_all_"))
+async def source_all_callback(callback: types.CallbackQuery) -> None:
+    _, _, guild_id, enabled = callback.data.split("_")
+    async with async_session() as session:
+        await DiscordSource.set_guild_subscriptions(
+            session, callback.from_user.id, int(guild_id), enabled == "1"
+        )
+        channels = await DiscordSource.get_channels(session, int(guild_id))
+        subscribed = await DiscordSource.get_user_channel_ids(session, callback.from_user.id)
+    await callback.message.edit_reply_markup(
+        reply_markup=source_channels_ikb(int(guild_id), channels, subscribed)
+    )
+    await callback.answer(
+        _("Все каналы включены.") if enabled == "1" else _("Все каналы отключены.")
+    )
 
 
 @router.callback_query(F.data.startswith("source_toggle_"))
@@ -88,4 +170,4 @@ async def source_toggle_callback(callback: types.CallbackQuery) -> None:
     await callback.message.edit_reply_markup(
         reply_markup=source_channels_ikb(int(guild_id), channels, subscribed)
     )
-    await callback.answer("Канал добавлен." if enabled else "Канал отключён.")
+    await callback.answer(_("Канал добавлен.") if enabled else _("Канал отключён."))

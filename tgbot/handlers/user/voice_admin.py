@@ -8,6 +8,7 @@ from database.models.voice_channel import VoiceChannelUserModel
 from database.services.voice_channel import VoiceChannelUser
 from tgbot.business.voice_update_dashboard import update_all_dashboards
 from tgbot.routers import user_router as router
+from tgbot.loader import _
 
 
 @router.message(Command("clear_voice_channels"), StateFilter(None))
@@ -28,10 +29,14 @@ async def _clear_voice_channels_command(message: types.Message) -> None:
         # Обновляем дашборды
         await update_all_dashboards()
 
-        await message.answer(f"✅ Cleared {count_before} users from voice channels. All dashboards updated.")
+        await message.answer(
+            _("✅ Удалено пользователей из голосовых каналов: {count}. Дашборды обновлены.").format(
+                count=count_before
+            )
+        )
 
     except Exception as e:
-        await message.answer(f"❌ Error clearing voice channels: {str(e)}")
+        await message.answer(_("❌ Не удалось очистить голосовые каналы: {error}").format(error=str(e)))
 
 
 @router.message(Command("voice_stats"), StateFilter(None))
@@ -42,7 +47,9 @@ async def _voice_stats_command(message: types.Message) -> None:
             users_in_channels = await VoiceChannelUser.get_all_users_in_channels(session)
 
         if not users_in_channels:
-            await message.answer("📊 <b>Voice Channels Statistics</b>\n\n📭 No users currently in voice channels")
+            await message.answer(
+                _("📊 <b>Статистика голосовых каналов</b>\n\n📭 Сейчас нет пользователей.")
+            )
             return
 
         # Группируем пользователей по каналам
@@ -63,19 +70,23 @@ async def _voice_stats_command(message: types.Message) -> None:
             total_users += 1
 
         # Формируем статистику
-        text = "📊 <b>Voice Channels Statistics</b>\n\n"
+        text = _("📊 <b>Статистика голосовых каналов</b>\n\n")
 
         for channel_name, stats in channels_stats.items():
-            text += f"🎙️ <b>{channel_name}</b>: {stats['count']} users\n"
+            text += _("🎙️ <b>{channel}</b>: {count} пользователей\n").format(
+                channel=channel_name, count=stats["count"]
+            )
             for user in stats['users']:
                 joined_time = user['joined'].strftime('%H:%M')
-                text += f"  👤 {user['name']} (joined at {joined_time})\n"
+                text += _("  👤 {name} (вошёл в {time})\n").format(
+                    name=user["name"], time=joined_time
+                )
             text += "\n"
 
-        text += f"📈 <b>Total users in voice channels: {total_users}</b>\n"
-        text += f"🔊 <b>Active channels: {len(channels_stats)}</b>"
+        text += _("📈 <b>Всего пользователей: {count}</b>\n").format(count=total_users)
+        text += _("🔊 <b>Активных каналов: {count}</b>").format(count=len(channels_stats))
 
         await message.answer(text, parse_mode="HTML")
 
     except Exception as e:
-        await message.answer(f"❌ Error getting voice stats: {str(e)}")
+        await message.answer(_("❌ Не удалось получить статистику: {error}").format(error=str(e)))

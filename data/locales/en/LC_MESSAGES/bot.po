@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-07-17 10:27+0300\n"
+"POT-Creation-Date: 2026-10-19 19:10+0300\n"
 "PO-Revision-Date: 2024-09-07 14:40+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -20,34 +20,47 @@ msgstr ""
 
 #: tgbot/commands.py:8
 msgid "start chat"
-msgstr ""
+msgstr "Start chat"
 
 #: tgbot/commands.py:9
 msgid "change language"
-msgstr ""
+msgstr "Change language"
 
 #: tgbot/commands.py:10
 msgid "bot description"
-msgstr ""
+msgstr "Bot description"
 
 #: tgbot/commands.py:11
 msgid "referal system"
-msgstr ""
+msgstr "Referral system"
 
-#: tgbot/commands.py:21
+#: tgbot/commands.py:12
+msgid "alert settings"
+msgstr "Notification settings"
+
+#: tgbot/commands.py:13
+msgid "notification sources"
+msgstr "Notification sources"
+
+#: tgbot/commands.py:23
 msgid "admin panel"
-msgstr ""
+msgstr "Admin panel"
 
 #: tgbot/text.py:7
 #, python-brace-format
-msgid "👋, <a href='tg://user?id={}'>{}</a>"
-msgstr ""
-
-#: tgbot/text.py:11
-msgid "Bot Info:"
+msgid ""
+"\n"
+"👋, <a href='tg://user?id={user_id}'>{name}</a>\n"
+"\n"
+"Это Telegram-бот для уведомлений об активности на Discord-серверах.\n"
+"Уведомления о голосовых каналах будут отправляться сюда 👀\n"
 msgstr ""
 
 #: tgbot/text.py:16
+msgid "Bot Info:"
+msgstr "Bot information:"
+
+#: tgbot/text.py:21
 #, python-brace-format
 msgid ""
 "Invited users: <b>{}</b>\n"
@@ -56,32 +69,283 @@ msgid ""
 "<code>https://t.me/{}?start={}</code>"
 msgstr ""
 
-#: tgbot/text.py:21
+#: tgbot/text.py:26
 msgid "You're the administrator!"
-msgstr ""
+msgstr "You are an administrator!"
 
-#: tgbot/text.py:25
+#: tgbot/text.py:30
 msgid "Select the language you want to switch to: 🌐"
 msgstr ""
 
-#: tgbot/text.py:28
+#: tgbot/text.py:33
 msgid "Your language has been successfully changed! ✅"
 msgstr ""
 
-#: tgbot/keyboards/inline/alert.py:12
+#: tgbot/handlers/user/dashboard.py:15
+msgid "📊 Создаём дашборд голосовых каналов..."
+msgstr ""
+
+#: tgbot/handlers/user/dashboard.py:18
+#, python-brace-format
+msgid "✅ Дашборд успешно создан. ID сообщения: {message_id}"
+msgstr ""
+
+#: tgbot/handlers/user/dashboard.py:23
+#, python-brace-format
+msgid "❌ Не удалось создать дашборд: {error}"
+msgstr ""
+
+#: tgbot/handlers/user/dashboard.py:30
+msgid "🔄 Обновляем все дашборды..."
+msgstr ""
+
+#: tgbot/handlers/user/dashboard.py:32
+msgid "✅ Все дашборды обновлены."
+msgstr ""
+
+#: tgbot/handlers/user/dashboard.py:34
+#, python-brace-format
+msgid "❌ Не удалось обновить дашборды: {error}"
+msgstr ""
+
+#: tgbot/handlers/user/dashboard_management.py:15
+msgid "❌ Ответьте на сообщение дашборда командой /remove_dashboard."
+msgstr ""
+
+#: tgbot/handlers/user/dashboard_management.py:27
+msgid "✅ Дашборд удалён."
+msgstr ""
+
+#: tgbot/handlers/user/dashboard_management.py:34
+msgid "❌ Дашборд не найден."
+msgstr ""
+
+#: tgbot/handlers/user/dashboard_management.py:37
+#, python-brace-format
+msgid "❌ Не удалось удалить дашборд: {error}"
+msgstr ""
+
+#: tgbot/handlers/user/dashboard_management.py:51
+msgid "📭 В этом чате нет активных дашбордов."
+msgstr ""
+
+#: tgbot/handlers/user/dashboard_management.py:54
+msgid ""
+"📊 <b>Активные дашборды:</b>\n"
+"\n"
+msgstr ""
+
+#: tgbot/handlers/user/dashboard_management.py:56
+#, python-brace-format
+msgid "🔗 ID сообщения: <code>{message_id}</code>\n"
+msgstr ""
+
+#: tgbot/handlers/user/dashboard_management.py:59
+#, python-brace-format
+msgid "📅 Создан: {created}\n"
+msgstr ""
+
+#: tgbot/handlers/user/dashboard_management.py:62
+#, python-brace-format
+msgid ""
+"🔄 Обновлён: {updated}\n"
+"\n"
+msgstr ""
+
+#: tgbot/handlers/user/dashboard_management.py:69
+#, python-brace-format
+msgid "❌ Не удалось получить список дашбордов: {error}"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:15
+msgid "📊 Команды дашборда:"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:16
+msgid "создать дашборд голосовых каналов"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:17
+msgid "принудительно обновить дашборды"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:18
+msgid "удалить дашборд ответом на его сообщение"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:19
+msgid "показать дашборд текущего чата"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:21
+msgid "🎙️ Мониторинг голосовых каналов:"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:22
+msgid "показать статистику голосовых каналов"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:23
+msgid "очистить записи голосовых каналов"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:25
+msgid "🔊 Возможности:"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:26
+msgid "мониторинг голосовых каналов в реальном времени"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:27
+msgid "автоматическое обновление дашбордов"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:28
+msgid "список пользователей в каждом канале"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:29
+msgid "общее количество пользователей"
+msgstr ""
+
+#: tgbot/handlers/user/help.py:31
+msgid "ℹ️ Дашборд обновляется при входе, выходе и переходе между каналами."
+msgstr ""
+
+#: tgbot/handlers/user/sources.py:35
+msgid "❌ Discord-серверы пока недоступны."
+msgstr ""
+
+#: tgbot/handlers/user/sources.py:38
+msgid ""
+"🔔 <b>Источники уведомлений</b>\n"
+"\n"
+msgstr ""
+
+#: tgbot/handlers/user/sources.py:39
+msgid "🟢 — уведомления включены\n"
+msgstr ""
+
+#: tgbot/handlers/user/sources.py:40
+msgid ""
+"🔴 — уведомления выключены\n"
+"\n"
+msgstr ""
+
+#: tgbot/handlers/user/sources.py:41
+msgid "Выберите Discord-сервер:"
+msgstr ""
+
+#: tgbot/handlers/user/sources.py:56
+msgid "❌ Не удалось загрузить список источников."
+msgstr ""
+
+#: tgbot/handlers/user/sources.py:80
+msgid "Для этого сервера нет голосовых каналов."
+msgstr ""
+
+#: tgbot/handlers/user/sources.py:83
+msgid ""
+"🔔 <b>Выбор каналов</b>\n"
+"\n"
+"Отметьте каналы, откуда получать уведомления:"
+msgstr ""
+
+#: tgbot/handlers/user/sources.py:108
+msgid "Все каналы включены."
+msgstr ""
+
+#: tgbot/handlers/user/sources.py:108
+msgid "Все каналы отключены."
+msgstr ""
+
+#: tgbot/handlers/user/sources.py:124
+msgid "Канал добавлен."
+msgstr ""
+
+#: tgbot/handlers/user/sources.py:124
+msgid "Канал отключён."
+msgstr ""
+
+#: tgbot/handlers/user/voice_admin.py:33
+#, python-brace-format
+msgid "✅ Удалено пользователей из голосовых каналов: {count}. Дашборды обновлены."
+msgstr ""
+
+#: tgbot/handlers/user/voice_admin.py:39
+#, python-brace-format
+msgid "❌ Не удалось очистить голосовые каналы: {error}"
+msgstr ""
+
+#: tgbot/handlers/user/voice_admin.py:51
+msgid ""
+"📊 <b>Статистика голосовых каналов</b>\n"
+"\n"
+"📭 Сейчас нет пользователей."
+msgstr ""
+
+#: tgbot/handlers/user/voice_admin.py:73
+msgid ""
+"📊 <b>Статистика голосовых каналов</b>\n"
+"\n"
+msgstr ""
+
+#: tgbot/handlers/user/voice_admin.py:76
+#, python-brace-format
+msgid "🎙️ <b>{channel}</b>: {count} пользователей\n"
+msgstr ""
+
+#: tgbot/handlers/user/voice_admin.py:81
+#, python-brace-format
+msgid "  👤 {name} (вошёл в {time})\n"
+msgstr ""
+
+#: tgbot/handlers/user/voice_admin.py:86
+#, python-brace-format
+msgid "📈 <b>Всего пользователей: {count}</b>\n"
+msgstr ""
+
+#: tgbot/handlers/user/voice_admin.py:87
+#, python-brace-format
+msgid "🔊 <b>Активных каналов: {count}</b>"
+msgstr ""
+
+#: tgbot/handlers/user/voice_admin.py:92
+#, python-brace-format
+msgid "❌ Не удалось получить статистику: {error}"
+msgstr ""
+
+#: tgbot/keyboards/inline/alert.py:13
 msgid "Notifications 🔔"
 msgstr ""
 
-#: tgbot/keyboards/inline/alert.py:24
+#: tgbot/keyboards/inline/alert.py:25
 msgid "Join the Discord channel"
-msgstr ""
+msgstr "Join the Discord server"
 
-#: tgbot/keyboards/inline/alert.py:34
+#: tgbot/keyboards/inline/alert.py:87
 msgid "Turn off 🔕"
 msgstr ""
 
-#: tgbot/keyboards/inline/alert.py:36
+#: tgbot/keyboards/inline/alert.py:89
 msgid "Turn on 🔔"
+msgstr ""
+
+#: tgbot/keyboards/inline/source.py:17
+msgid "ℹ️ Выберите сервер, затем каналы"
+msgstr ""
+
+#: tgbot/keyboards/inline/source.py:31
+msgid "🔴 Отключить все"
+msgstr ""
+
+#: tgbot/keyboards/inline/source.py:31
+msgid "🟢 Включить все"
+msgstr ""
+
+#: tgbot/keyboards/inline/source.py:43
+msgid "⬅️ К серверам"
 msgstr ""
 
 #~ msgid "Уведоления 🔔"
@@ -94,5 +358,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Включить 🔔"
+#~ msgstr ""
+
+#~ msgid "👋, <a href='tg://user?id={}'>{}</a>"
 #~ msgstr ""
 

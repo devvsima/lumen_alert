@@ -22,9 +22,12 @@ class StartMiddleware(BaseMiddleware):
 
         data["user"] = user
 
-        if is_create:
-            if inviter := data["command"].args:
-                inviter = await TgUser.get_by_id(decode_base62(inviter))
-                await TgUser.increment_referral_count(session, inviter)
+        if is_create and data["command"].args:
+            argument = data["command"].args
+            if not argument.startswith("guild_"):
+                inviter_id = decode_base62(argument)
+                inviter = await TgUser.get_by_id(session, inviter_id)
+                if inviter is not None:
+                    await TgUser.increment_referral_count(session, inviter)
 
         return await handler(message, data)
