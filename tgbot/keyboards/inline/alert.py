@@ -5,16 +5,42 @@ from data.config import DISCORD_CHANNEL_URL
 from tgbot.loader import _
 
 
-def alert_command_ikb():
-    ikb = InlineKeyboardMarkup(
-        resize_keyboard=True,
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(text=_("Notifications 🔔"), callback_data="alert_settings"),
-            ],
-        ],
+def alert_command_ikb() -> InlineKeyboardMarkup:
+    """Главное меню пользователя."""
+    builder = InlineKeyboardBuilder()
+    builder.row(
+        InlineKeyboardButton(
+            text=_("🔔 Уведомления"),
+            callback_data="alert_settings",
+        ),
     )
-    return ikb
+    builder.row(
+        InlineKeyboardButton(
+            text=_("🎯 Серверы и каналы"),
+            callback_data="source_settings",
+        ),
+    )
+    builder.row(
+        InlineKeyboardButton(
+            text=_("📊 Дашборд"),
+            callback_data="menu_dashboard",
+        ),
+        InlineKeyboardButton(
+            text=_("🌐 Язык"),
+            callback_data="menu_language",
+        ),
+    )
+    builder.row(
+        InlineKeyboardButton(text=_("❓ Помощь"), callback_data="menu_help"),
+        InlineKeyboardButton(text=_("👥 Пригласить"), callback_data="menu_invite"),
+    )
+    return builder.as_markup()
+
+
+def menu_back_ikb() -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text=_("⬅️ Главное меню"), callback_data="menu_back")
+    return builder.as_markup()
 
 
 def ds_link_ikb():
@@ -94,35 +120,36 @@ def alert_settings_ikb(user) -> InlineKeyboardMarkup:
     """Клавиатура для настройки уведомлений"""
     builder = InlineKeyboardBuilder()
 
-    # Настройки уведомлений
     builder.row(
         InlineKeyboardButton(
-            text=f"📥 Присоединение: {'✅' if user.alert_on_join else '❌'}",
+            text=f"📥 Вход: {'✅' if user.alert_on_join else '❌'}",
             callback_data=f"toggle_join_{user.id}",
-        )
-    )
-    builder.row(
+        ),
         InlineKeyboardButton(
-            text=f"📤 Покидание: {'✅' if user.alert_on_leave else '❌'}",
+            text=f"📤 Выход: {'✅' if user.alert_on_leave else '❌'}",
             callback_data=f"toggle_leave_{user.id}",
-        )
+        ),
     )
     builder.row(
         InlineKeyboardButton(
-            text=f"🔄 Переключение: {'✅' if user.alert_on_switch else '❌'}",
+            text=f"🔄 Переход: {'✅' if user.alert_on_switch else '❌'}",
             callback_data=f"toggle_switch_{user.id}",
-        )
-    )
-    builder.row(
+        ),
         InlineKeyboardButton(
-            text=f"🔔 Все уведомления: {'✅' if user.is_alert else '❌'}",
+            text=f"🔔 Все: {'✅' if user.is_alert else '❌'}",
             callback_data=f"toggle_all_{user.id}",
+        ),
+    )
+    builder.row(
+        InlineKeyboardButton(
+            text=_("🎯 Серверы и каналы"),
+            callback_data="source_settings",
         )
     )
     builder.row(
         InlineKeyboardButton(
-            text="🎯 Источники уведомлений",
-            callback_data="source_settings",
+            text=_("⬅️ Главное меню"),
+            callback_data="menu_back",
         )
     )
     # builder.row(

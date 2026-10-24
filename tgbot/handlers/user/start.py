@@ -12,7 +12,7 @@ from tgbot.text import message_text as mt
 
 
 @start_router.message(CommandStart(), StateFilter(None))
-async def _start_command(message: types.Message) -> None:
+async def _start_command(message: types.Message, is_new_user: bool = False) -> None:
     argument = (message.text or "").split(maxsplit=1)
     is_guild_link = len(argument) == 2 and argument[1].startswith("guild_")
     if is_guild_link:
@@ -37,14 +37,22 @@ async def _start_command(message: types.Message) -> None:
         else:
             await message.answer(_("❌ Некорректная ссылка на Discord-сервер."))
 
-    photo = types.FSInputFile(LOGO_DIR)
-    text = mt.WELCOME.format(
-        user_id=message.from_user.id,
-        name=message.from_user.full_name,
-        url=DISCORD_CHANNEL_URL,
-    )
-    await message.answer_photo(
-        photo=photo,
-        caption=text,
+    if is_new_user:
+        photo = types.FSInputFile(LOGO_DIR)
+        text = mt.WELCOME.format(
+            user_id=message.from_user.id,
+            name=message.from_user.full_name,
+            url=DISCORD_CHANNEL_URL,
+        )
+        await message.answer_photo(
+            photo=photo,
+            caption=text,
+            reply_markup=alert_command_ikb(),
+        )
+        return
+
+    await message.answer(
+        _("🏠 <b>Главное меню</b>\nВыберите нужный раздел:"),
         reply_markup=alert_command_ikb(),
+        parse_mode="HTML",
     )

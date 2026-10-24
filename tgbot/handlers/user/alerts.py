@@ -5,6 +5,7 @@ from aiogram.filters.state import StateFilter
 from database.connect import async_session
 from database.services.tg_users import TgUser
 from tgbot.business.alert_settings import AlertSettings
+from tgbot.business.navigation import edit_navigation_message
 from tgbot.keyboards.inline.alert import alert_settings_ikb
 from tgbot.routers import user_router as router
 from utils.logging import logger
@@ -44,7 +45,8 @@ async def alert_settings_command(callback: types.CallbackQuery) -> None:
 
             temp_user = TempUser(user, settings)
 
-            await callback.message.answer(
+            await edit_navigation_message(
+                callback.message,
                 settings_text, reply_markup=alert_settings_ikb(temp_user), parse_mode="HTML"
             )
     except Exception as e:
@@ -163,7 +165,8 @@ async def toggle_join_callback(callback: types.CallbackQuery):
             )
 
             try:
-                await callback.message.edit_text(
+                await edit_navigation_message(
+                    callback.message,
                     settings_text, reply_markup=alert_settings_ikb(temp_user), parse_mode="HTML"
                 )
                 await callback.answer(f"✅ Уведомления о присоединении {action}!")
@@ -222,7 +225,8 @@ async def toggle_leave_callback(callback: types.CallbackQuery):
             )
 
             try:
-                await callback.message.edit_text(
+                await edit_navigation_message(
+                    callback.message,
                     settings_text, reply_markup=alert_settings_ikb(updated_user), parse_mode="HTML"
                 )
                 await callback.answer(f"✅ Уведомления о покидании {action}!")
@@ -271,7 +275,8 @@ async def toggle_switch_callback(callback: types.CallbackQuery):
                 f"🔔 Общие уведомления: {'✅' if updated_user.is_alert else '❌'}"
             )
 
-            await callback.message.edit_text(
+            await edit_navigation_message(
+                callback.message,
                 settings_text, reply_markup=alert_settings_ikb(updated_user), parse_mode="HTML"
             )
             await callback.answer("✅ Настройка обновлена!")
@@ -310,7 +315,8 @@ async def toggle_all_callback(callback: types.CallbackQuery):
                 f"🔔 Общие уведомления: {'✅' if updated_user.is_alert else '❌'}"
             )
 
-            await callback.message.edit_text(
+            await edit_navigation_message(
+                callback.message,
                 settings_text, reply_markup=alert_settings_ikb(updated_user), parse_mode="HTML"
             )
             await callback.answer("✅ Общие уведомления обновлены!")
@@ -352,18 +358,19 @@ async def refresh_settings_callback(callback: types.CallbackQuery):
             )
 
             try:
-                await callback.message.edit_text(
-                    settings_text, reply_markup=alert_settings_ikb(user), parse_mode="HTML"
+                await edit_navigation_message(
+                    callback.message,
+                    settings_text,
+                    reply_markup=alert_settings_ikb(user),
+                    parse_mode="HTML",
                 )
                 await callback.answer("🔄 Настройки обновлены!")
             except Exception as edit_error:
                 if "message is not modified" in str(edit_error).lower():
                     await callback.answer("🔄 Настройки актуальны!")
                 else:
-                    await callback.message.answer(
-                        settings_text, reply_markup=alert_settings_ikb(user), parse_mode="HTML"
-                    )
-                    await callback.answer("🔄 Настройки обновлены!")
+                    logger.error(f"Refresh edit error: {edit_error}")
+                    await callback.answer("❌ Не удалось обновить меню.", show_alert=True)
 
     except Exception as e:
         await callback.answer(f"❌ Ошибка: {str(e)}", show_alert=True)

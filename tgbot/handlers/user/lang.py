@@ -6,6 +6,8 @@ from database.models import TgUserModel
 from database.services import TgUser
 from tgbot.filters.kb_filter import LangCallback
 from tgbot.keyboards.inline.lang import lang_ikb
+from tgbot.keyboards.inline.alert import alert_command_ikb
+from tgbot.business.navigation import edit_navigation_message
 from tgbot.routers import user_router as router
 from tgbot.text import message_text as mt
 
@@ -28,4 +30,8 @@ async def _change_lang(
         id=user.id,
         language=language,
     )
-    await callback.message.edit_text(mt.DONE_CHANGE_LANG(language))
+    await edit_navigation_message(
+        callback.message,
+        mt.DONE_CHANGE_LANG(language),
+        reply_markup=alert_command_ikb(),
+    )

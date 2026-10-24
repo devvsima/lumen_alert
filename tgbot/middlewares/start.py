@@ -21,6 +21,7 @@ class StartMiddleware(BaseMiddleware):
             return
 
         data["user"] = user
+        data["is_new_user"] = is_create
 
         if is_create and data["command"].args:
             argument = data["command"].args
